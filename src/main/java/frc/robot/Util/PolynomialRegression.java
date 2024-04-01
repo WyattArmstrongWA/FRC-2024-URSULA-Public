@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.Util;
 
 /******************************************************************************
  *  Compilation:  javac -cp .:jama.jar PolynomialRegression.java

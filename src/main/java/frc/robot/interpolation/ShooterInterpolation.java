@@ -2,9 +2,9 @@ package frc.robot.interpolation;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.util.InterpolatingDouble;
 import frc.robot.Constants;
 import frc.robot.Constants.Setpoints;
+import frc.robot.Util.InterpolatingDouble;
 
 public class ShooterInterpolation {
 

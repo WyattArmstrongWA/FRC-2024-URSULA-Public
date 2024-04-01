@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Drivetrain;
+package frc.robot.Subsystems.Drivetrain;
 
 import java.util.function.Supplier;
 
@@ -22,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.util.ModifiedSignalLogger;
-import frc.robot.util.SwerveVoltageRequest;
+import frc.robot.Util.ModifiedSignalLogger;
+import frc.robot.Util.SwerveVoltageRequest;
 import frc.robot.generated.TunerConstants;
 
 import static edu.wpi.first.units.Units.*;

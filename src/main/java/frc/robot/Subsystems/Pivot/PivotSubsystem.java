@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Pivot;
+package frc.robot.Subsystems.Pivot;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.Setpoints;
-import frc.robot.util.ErrorCheckUtil;
-import frc.robot.util.ErrorCheckUtil.CommonErrorNames;
-import frc.robot.util.TalonFXFactory;
+import frc.robot.Util.ErrorCheckUtil;
+import frc.robot.Util.TalonFXFactory;
+import frc.robot.Util.ErrorCheckUtil.CommonErrorNames;
 
 public class PivotSubsystem extends SubsystemBase {
   private final TalonFX pivotTalon = configurePivotTalon(TalonFXFactory.createTalon(PivotConstants.pivotTalonID, PivotConstants.pivotTalonCANBus, PivotConstants.kPivotConfiguration));

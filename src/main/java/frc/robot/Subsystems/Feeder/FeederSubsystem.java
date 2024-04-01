@@ -1,14 +1,14 @@
 
-package frc.robot.subsystems.Feeder;
+package frc.robot.Subsystems.Feeder;
 
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.playingwithfusion.TimeOfFlight;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.TalonFXFactory;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.Setpoints;
+import frc.robot.Util.TalonFXFactory;
 
 public class FeederSubsystem extends SubsystemBase {
 

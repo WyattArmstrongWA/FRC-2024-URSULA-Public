@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Elevator;
+package frc.robot.Subsystems.Elevator;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -7,9 +7,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.util.ErrorCheckUtil;
-import frc.robot.util.TalonFXFactory;
-import frc.robot.util.ErrorCheckUtil.CommonErrorNames;
+import frc.robot.Util.ErrorCheckUtil;
+import frc.robot.Util.TalonFXFactory;
+import frc.robot.Util.ErrorCheckUtil.CommonErrorNames;
 
 
 public class ElevatorSubsystem extends SubsystemBase {

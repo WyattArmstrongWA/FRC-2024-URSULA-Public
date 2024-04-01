@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Shooter;
+package frc.robot.Subsystems.Shooter;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -6,10 +6,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Util.ErrorCheckUtil;
+import frc.robot.Util.TalonFXFactory;
+import frc.robot.Util.ErrorCheckUtil.CommonErrorNames;
 import frc.robot.Constants;
-import frc.robot.util.ErrorCheckUtil;
-import frc.robot.util.ErrorCheckUtil.CommonErrorNames;
-import frc.robot.util.TalonFXFactory;
 
 public class ShooterSubsystem extends SubsystemBase{
 
