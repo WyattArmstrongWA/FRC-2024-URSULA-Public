@@ -10,6 +10,8 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,13 +21,20 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Commands.IntakeNote;
+import frc.robot.Subsystems.Amp.AmpSubsystem;
 import frc.robot.Subsystems.Drivetrain.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.Drivetrain.Telemetry;
+import frc.robot.Subsystems.Feeder.FeederSubsystem;
+import frc.robot.Subsystems.Intake.IntakeSubsystem;
 import frc.robot.Util.CommandXboxPS5Controller;
 import frc.robot.Vision.Limelight;
 import frc.robot.generated.TunerConstants;
 
 public class RobotContainer {
+  private IntakeSubsystem intake = new IntakeSubsystem();
+  private FeederSubsystem feeder = new FeederSubsystem();
+  private AmpSubsystem amp = new AmpSubsystem();
   private SendableChooser<Command> autoChooser;
 
   private double m_MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // Initial max is true top speed
@@ -55,6 +64,16 @@ public class RobotContainer {
     
     // reset the field-centric heading on start button press
     m_driverCtrl.start().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
+
+    m_driverCtrl.a().whileTrue(new IntakeNote(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()));
+    //m_driverCtrl.y().whileTrue(new Shoot(pivot, shooter, feeder, intake));
+    // m_driverCtrl.y().whileTrue(new ScoreAmp(pivot, shooter, feeder, intake));
+    //m_driverCtrl.rightBumper().whileTrue(new AlignToSpeaker());
+
+
+    // m_operatorCtrl.y().whileTrue(new IndexToShooter(intake, amp));
+    // m_operatorCtrl.a().whileTrue(new IndexToAmp(intake, amp));
+
 
   }
 

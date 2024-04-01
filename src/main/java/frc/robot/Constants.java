@@ -77,14 +77,14 @@ public final class Constants {
     public static final class AmpConstants {
     
 
-    public static final int ampTalonID = 19; 
+    public static final int ampTalonID = 18; 
     public static final String ampTalonCANBus = "rio";
 
-    public static final int ampSensorID = 27; 
+    public static final int ampSensorID = 3; 
     public static final RangingMode ampSensorRange = RangingMode.Short;
     public static final double ampSampleTime = 0;
 
-    public static final double isNotePresentTOF = 250; // Milimeters
+    public static final double isNotePresentTOF = 230; // Milimeters
     public static final double isNoteCenteredTOF = 70; // Milimeters
     public static final double isNoteCenteredTOFTolerance = 5; // Milimeters
 
@@ -106,8 +106,8 @@ public final class Constants {
 
   public static final class ElevatorConstants {
 
-    public static final int elevatorLeaderTalonID = 22; 
-    public static final int elevatorFollowerTalonID = 23;
+    public static final int elevatorLeaderTalonID = 61; 
+    public static final int elevatorFollowerTalonID = 62;
     public static final String elevatorTalonCANBus = "rio";
 
     public static final double elevatorGearRatio = 25; // Sensor to Mechanism Ratio
@@ -166,15 +166,15 @@ public final class Constants {
 
   public static final class FeederConstants {
 
-    public static final int feederTalonID = 19; 
+    public static final int feederTalonID = 13; 
     public static final String feederTalonCANBus = "rio";
 
-    public static final int feederSensorID = 27; 
+    public static final int feederSensorID = 2; 
     public static final RangingMode feederSensorRange = RangingMode.Short;
     public static final double feederSfeederleTime = 0;
 
-    public static final double isNotePresentTOF = 250; // Milimeters
-    public static final double isNoteCenteredTOF = 70; // Milimeters
+    public static final double isNotePresentTOF = 180; // Milimeters
+    public static final double isNoteCenteredTOF = 60; // Milimeters
     public static final double isNoteCenteredTOFTolerance = 5; // Milimeters
 
     private static final double feederMaxDutyCycle = 0.5;
@@ -196,14 +196,14 @@ public final class Constants {
 
   public static final class IntakeConstants {
 
-    public static final int intakeTalonID = 18;
+    public static final int intakeTalonID = 17;
     public static final String intakeTalonCANBus = "rio";
 
-    public static final int intakeSensorID = 26;
+    public static final int intakeSensorID = 1;
     public static final RangingMode intakeSensorRange = RangingMode.Short;
     public static final double intakeSampleTime = 24;
 
-    public static final double isNotePresentTOF = 250; // Milimeters
+    public static final double isNotePresentTOF = 220; // Milimeters
 
     private static final double intakeMaxDutyCycle = 0.5;
 
@@ -227,11 +227,10 @@ public final class Constants {
 
     public static final int pivotTalonID =  16; 
     public static final String pivotTalonCANBus = "rio";
-    public static final int pivotEncoderID = 20;
+    public static final int pivotEncoderID = 60;
     public static final String pivotEncoderCANBus = "rio";
 
-    public static final double pivotGearRatio = 15 * 2; // Sensor to Mechanism Ratio
-    public static final double timeBeforeEncoderReset = 1.5; // Seconds before the motor is initialized to the through bore;
+    public static final double pivotGearRatio = 60.9; // Sensor to Mechanism Ratio
 
     public static final int pivotEncoderPort = 0; 
     public static final Rotation2d absoluteEncoderOffset = Rotation2d.fromRotations(0.5);
@@ -250,7 +249,7 @@ public final class Constants {
         .withSupplyCurrentLimitEnable(true))
       .withMotorOutput(new MotorOutputConfigs()
         .withNeutralMode(NeutralModeValue.Brake)
-        .withInverted(InvertedValue.Clockwise_Positive))
+        .withInverted(InvertedValue.CounterClockwise_Positive))
       .withSlot0(new Slot0Configs()
         .withKV(0)
         .withKA(0)
@@ -261,10 +260,10 @@ public final class Constants {
         .withKG(-0.4) // -0.4 // Negative b/c of pivot direction & how CTRE uses it
         .withKS(0)) // 0.5
       .withFeedback(new FeedbackConfigs()
-        .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-        .withFeedbackRemoteSensorID(pivotEncoderID)
-        .withSensorToMechanismRatio(1)
-        .withRotorToSensorRatio(pivotGearRatio))
+        //  .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+        //  .withFeedbackRemoteSensorID(pivotEncoderID)
+      .withSensorToMechanismRatio(pivotGearRatio))
+        //  .withRotorToSensorRatio(pivotGearRatio))
       .withMotionMagic(new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(10) // Default 10
         .withMotionMagicAcceleration(15) // Default 15
@@ -290,8 +289,8 @@ public final class Constants {
 
   public static final class ShooterConstants {
 
-    public static final int shooterTalonLeaderID = 16; 
-    public static final int shooterTalonFollowerID = 17;
+    public static final int shooterTalonLeaderID = 14; 
+    public static final int shooterTalonFollowerID = 15;
     public static final String shooterTalonCANBus = "rio";
 
     public static final double shooterGearRatio = 0.5; // Sensor to Mechanism Ratio

@@ -43,6 +43,10 @@ public class FeederSubsystem extends SubsystemBase {
     return feederSensor.getRange() < FeederConstants.isNotePresentTOF;
   }
 
+  public double getRangeTOF() {
+    return feederSensor.getRange();
+  }
+
   public void indexNoteToFeeder() {
 
     if (feederSensor.getRange() > FeederConstants.isNotePresentTOF) {

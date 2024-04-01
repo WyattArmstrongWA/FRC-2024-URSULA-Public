@@ -9,17 +9,33 @@ import com.ctre.phoenix6.SignalLogger;
 
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Subsystems.Amp.AmpSubsystem;
+import frc.robot.Subsystems.Elevator.ElevatorSubsystem;
+import frc.robot.Subsystems.Feeder.FeederSubsystem;
+import frc.robot.Subsystems.Intake.IntakeSubsystem;
+import frc.robot.Subsystems.Pivot.PivotSubsystem;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private IntakeSubsystem intake;
+  private FeederSubsystem feeder;
+  private AmpSubsystem amp;
+  private PivotSubsystem pivot;
+  private ElevatorSubsystem elevator;
 
   private RobotContainer m_robotContainer;
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    intake = new IntakeSubsystem();
+    feeder = new FeederSubsystem();
+    amp = new AmpSubsystem();
+    pivot = new PivotSubsystem();
+    elevator = new ElevatorSubsystem();
 
     m_robotContainer.m_drivetrain.getDaqThread().setThreadPriority(99);
 
@@ -28,6 +44,17 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
+    SmartDashboard.putBoolean("intake sensor", intake.isNotePresentTOF());
+    SmartDashboard.putNumber("intake sensor range", intake.getRangeTOF());
+    SmartDashboard.putBoolean("feeder sensor", feeder.isNotePresentTOF());
+    SmartDashboard.putBoolean("feeder sensor centered", feeder.isNoteCenteredTOF());
+    SmartDashboard.putNumber("feeder sensor range", feeder.getRangeTOF());
+    SmartDashboard.putBoolean("amp sensor", amp.isNotePresentTOF());
+    SmartDashboard.putBoolean("amp sensor centered", amp.isNotePresentTOF());
+    SmartDashboard.putNumber("amp sensor range", amp.getRangeTOF());
+    SmartDashboard.putNumber("shooter angle", pivot.getAngle().getDegrees());
+
+
   }
 
   @Override

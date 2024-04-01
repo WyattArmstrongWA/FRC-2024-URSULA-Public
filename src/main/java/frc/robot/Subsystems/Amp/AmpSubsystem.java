@@ -42,6 +42,10 @@ public class AmpSubsystem extends SubsystemBase {
     return ampSensor.getRange() < AmpConstants.isNotePresentTOF;
   }
 
+  public double getRangeTOF() {
+    return ampSensor.getRange();
+  }
+
   public void indexNoteToAmp() {
 
     if (ampSensor.getRange() > AmpConstants.isNotePresentTOF) {

@@ -41,6 +41,10 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeSensor.getRange() < IntakeConstants.isNotePresentTOF;
   }
 
+  public double getRangeTOF() {
+    return intakeSensor.getRange();
+  }
+
   @Override
   public void periodic() {
   }
