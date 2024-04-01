@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Drivetrain;
+package frc.robot.subsystems.Drivetrain;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
