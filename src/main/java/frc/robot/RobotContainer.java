@@ -21,12 +21,15 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Commands.IndexToShooter;
 import frc.robot.Commands.IntakeNote;
 import frc.robot.Subsystems.Amp.AmpSubsystem;
 import frc.robot.Subsystems.Drivetrain.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.Drivetrain.Telemetry;
 import frc.robot.Subsystems.Feeder.FeederSubsystem;
 import frc.robot.Subsystems.Intake.IntakeSubsystem;
+import frc.robot.Subsystems.Pivot.PivotSubsystem;
+import frc.robot.Subsystems.Shooter.ShooterSubsystem;
 import frc.robot.Util.CommandXboxPS5Controller;
 import frc.robot.Vision.Limelight;
 import frc.robot.generated.TunerConstants;
@@ -35,6 +38,8 @@ public class RobotContainer {
   private IntakeSubsystem intake = new IntakeSubsystem();
   private FeederSubsystem feeder = new FeederSubsystem();
   private AmpSubsystem amp = new AmpSubsystem();
+  private PivotSubsystem pivot = new PivotSubsystem();
+  private ShooterSubsystem shooter = new ShooterSubsystem();
   private SendableChooser<Command> autoChooser;
 
   private double m_MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // Initial max is true top speed
@@ -70,9 +75,11 @@ public class RobotContainer {
     // m_driverCtrl.y().whileTrue(new ScoreAmp(pivot, shooter, feeder, intake));
     //m_driverCtrl.rightBumper().whileTrue(new AlignToSpeaker());
 
-
-    // m_operatorCtrl.y().whileTrue(new IndexToShooter(intake, amp));
-    // m_operatorCtrl.a().whileTrue(new IndexToAmp(intake, amp));
+    m_operatorCtrl.y().whileTrue(new IndexToShooter(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()).alongWith(runOnce(() -> feeder.stop())).alongWith(runOnce(() -> amp.stop())));
+    m_operatorCtrl.x().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(40))));
+    m_operatorCtrl.b().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(0))));
+    m_operatorCtrl.rightBumper().onTrue(runOnce(() -> feeder.setFeederVoltage(5))).onFalse(runOnce(() -> feeder.stop()));
+    m_operatorCtrl.a().whileTrue(runOnce(() -> shooter.setVelocity(-6000/60))).onFalse(runOnce(() -> shooter.stop()));
 
 
   }

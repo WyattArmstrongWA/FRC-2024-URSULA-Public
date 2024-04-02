@@ -34,7 +34,7 @@ public class PivotSubsystem extends SubsystemBase {
    * @param rotations 0 to 1 rotations
    */
   private void setAngle(double position) {
-    pivotTalon.setControl(PivotConstants.pivotPositionControl.withPosition(position));
+   pivotTalon.setControl(PivotConstants.pivotPositionControl.withPosition(position));
   }
 
   /**
@@ -73,20 +73,12 @@ public class PivotSubsystem extends SubsystemBase {
     return pivotTalon.getMotorVoltage().getValue();
   }
 
-  public Rotation2d getAbsoluteEncoderPosition() {
-    return Rotation2d.fromRotations(pivotEncoder.getAbsolutePosition().getValue()).minus(Rotation2d.fromRotations(PivotConstants.absoluteEncoderOffset.getRotations()));
-  }
-
   public void stop() {
     pivotTalon.setControl(new DutyCycleOut(0));
   }
 
   public void setPivotVoltage(double volts) {
     pivotTalon.setControl(new VoltageOut(volts));
-  }
-
-  public void resetToAbsolute() {
-    pivotTalon.setPosition(getAbsoluteEncoderPosition().getRotations());
   }
 
   @Override

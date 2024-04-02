@@ -25,11 +25,11 @@ public class ShooterSubsystem extends SubsystemBase{
     /**
    * Set both shooter motors to the same speed
    * 
-   * @param speed rotations per second
+   * @param rps rotations per second
    */
-  public void setVelocity(double speed) {
+  public void setVelocity(double rps) {
 
-    shooterTalonLeader.setControl(ShooterConstants.shooterControl.withVelocity(speed));
+    shooterTalonLeader.setControl(ShooterConstants.shooterControl.withVelocity(rps));
     shooterTalonFollower.setControl(ShooterConstants.followerControl);
   }
 

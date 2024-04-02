@@ -9,14 +9,14 @@ import frc.robot.Subsystems.Amp.AmpSubsystem;
 import frc.robot.Subsystems.Feeder.FeederSubsystem;
 import frc.robot.Subsystems.Intake.IntakeSubsystem;
 
-public class IntakeNote extends Command {
+public class IndexToShooter extends Command {
 
   private IntakeSubsystem intake;
   private FeederSubsystem feeder;
   private AmpSubsystem amp;
 
   /** Creates a new IntakeNote. */
-  public IntakeNote(IntakeSubsystem intake, FeederSubsystem feeder, AmpSubsystem amp){
+  public IndexToShooter(IntakeSubsystem intake, FeederSubsystem feeder, AmpSubsystem amp){
 
     this.intake = intake;
     this.feeder = feeder;
@@ -36,27 +36,23 @@ public class IntakeNote extends Command {
     if (intake.isNotePresentTOF() || feeder.isNotePresentTOF() || amp.isNotePresentTOF()) {
       //Leds.getInstance().hasGamePiece = noteDetected;
     }
-
-    if (!intake.isNotePresentTOF()) {
-      intake.setIntakeVoltage(Setpoints.intakingTargetVoltage);
-    } else if (intake.isNotePresentTOF()) {
-      intake.stop();
-    }
-    else if (feeder.isNotePresentTOF() || amp.isNotePresentTOF()) {
-      intake.stop();
-    } 
-  }
+        intake.setIntakeVoltage(Setpoints.intakingTargetVoltage);
+        feeder.indexNoteToFeeder();
+        amp.setAmpVoltage(Setpoints.ampInjectTargetVoltage);
+}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     intake.stop();
+    feeder.stop();
+    amp.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (intake.isNotePresentTOF()) {
+    if (feeder.isNoteCenteredTOF()) {
       return true;
     }
     return false;

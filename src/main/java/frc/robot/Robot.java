@@ -13,10 +13,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Subsystems.Amp.AmpSubsystem;
-import frc.robot.Subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.Subsystems.Feeder.FeederSubsystem;
 import frc.robot.Subsystems.Intake.IntakeSubsystem;
 import frc.robot.Subsystems.Pivot.PivotSubsystem;
+import frc.robot.Subsystems.Shooter.ShooterSubsystem;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
   private FeederSubsystem feeder;
   private AmpSubsystem amp;
   private PivotSubsystem pivot;
-  private ElevatorSubsystem elevator;
+  private ShooterSubsystem shooter;
 
   private RobotContainer m_robotContainer;
 
@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
     feeder = new FeederSubsystem();
     amp = new AmpSubsystem();
     pivot = new PivotSubsystem();
-    elevator = new ElevatorSubsystem();
+    shooter = new ShooterSubsystem();
 
     m_robotContainer.m_drivetrain.getDaqThread().setThreadPriority(99);
 
@@ -53,8 +53,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("amp sensor centered", amp.isNotePresentTOF());
     SmartDashboard.putNumber("amp sensor range", amp.getRangeTOF());
     SmartDashboard.putNumber("shooter angle", pivot.getAngle().getDegrees());
-
-
+    SmartDashboard.putNumber("shooter rpm", shooter.getVelocity()*60);
   }
 
   @Override

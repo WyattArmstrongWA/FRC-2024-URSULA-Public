@@ -49,14 +49,14 @@ public class AmpSubsystem extends SubsystemBase {
   public void indexNoteToAmp() {
 
     if (ampSensor.getRange() > AmpConstants.isNotePresentTOF) {
-      setAmpVoltage(Setpoints.indexingTargetVolts);
+      setAmpVoltage(Setpoints.ampEjectTargetVoltage);
     } else if (isNoteCenteredTOF()) {
       stop();
     } else {
       if (ampSensor.getRange() > AmpConstants.isNoteCenteredTOF) {
-        setAmpVoltage(Setpoints.indexingTargetVoltsSlow);
+        setAmpVoltage(Setpoints.ampEjectTargetVoltage);
       } else if (ampSensor.getRange() < AmpConstants.isNoteCenteredTOF) {
-        setAmpVoltage(-Setpoints.indexingTargetVoltsSlow);
+        setAmpVoltage(Setpoints.ampInjectTargetVoltage);
       }
     }
   }

@@ -16,10 +16,10 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -60,12 +60,17 @@ public final class Constants {
         public static final double PivotStowAngle = 0;
         public static final double ElevatorStowHeight = 0;
     
-        public static final double indexingTargetVolts = 3; 
-        public static final double indexingTargetVoltsSlow = 1;
-        public static final double indexerScoringVoltage = 5;
+        public static final double indexingTargetVolts = 10; 
+        public static final double indexingTargetVoltsSlow = 5;
+        public static final double indexerScoringVoltage = 8;
     
         public static final double intakingTargetVoltage = 6;
         public static final double outtakingTargetVoltage = -6;
+
+        public static final double ampEjectTargetVoltage = 6;
+        public static final double ampInjectTargetVoltage = -6;
+
+        
     
         public static final double pivotMinClamp = 0;
         public static final double pivotMaxClamp = 60;
@@ -85,8 +90,8 @@ public final class Constants {
     public static final double ampSampleTime = 0;
 
     public static final double isNotePresentTOF = 230; // Milimeters
-    public static final double isNoteCenteredTOF = 70; // Milimeters
-    public static final double isNoteCenteredTOFTolerance = 5; // Milimeters
+    public static final double isNoteCenteredTOF = 50; // Milimeters
+    public static final double isNoteCenteredTOFTolerance = 2; // Milimeters
 
     private static final double ampMaxDutyCycle = 0.5;
 
@@ -232,19 +237,13 @@ public final class Constants {
 
     public static final double pivotGearRatio = 60.9; // Sensor to Mechanism Ratio
 
-    public static final int pivotEncoderPort = 0; 
-    public static final Rotation2d absoluteEncoderOffset = Rotation2d.fromRotations(0.5);
-    /****
-    * Pivot is counter-clockwise (from the left side of the robot with intake
-    * forward) with 0 being horizontal towards the intake
-    ****/
-    public static final Rotation2d pivotMinAngle = Rotation2d.fromDegrees(-25);
-    public static final Rotation2d pivotMaxAngle = Rotation2d.fromDegrees(180);
+    public static final Rotation2d pivotMinAngle = Rotation2d.fromDegrees(0);
+    public static final Rotation2d pivotMaxAngle = Rotation2d.fromDegrees(58);
 
     public static final TalonFXConfiguration kPivotConfiguration = new TalonFXConfiguration()
       .withCurrentLimits(new CurrentLimitsConfigs()
-        .withStatorCurrentLimit(80)
-        .withSupplyCurrentLimit(40)
+        .withStatorCurrentLimit(60)
+        .withSupplyCurrentLimit(60)
         .withStatorCurrentLimitEnable(true)
         .withSupplyCurrentLimitEnable(true))
       .withMotorOutput(new MotorOutputConfigs()
@@ -253,11 +252,41 @@ public final class Constants {
       .withSlot0(new Slot0Configs()
         .withKV(0)
         .withKA(0)
-        .withKP(55) // 40  || 55
+        .withKP(1000)
         .withKI(0)
-        .withKD(3) // 0.5 || 5
+        .withKD(1)
         .withGravityType(GravityTypeValue.Arm_Cosine)
-        .withKG(-0.4) // -0.4 // Negative b/c of pivot direction & how CTRE uses it
+        .withKG(6)
+        .withKS(0))
+      .withFeedback(new FeedbackConfigs()
+        //  .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+        //  .withFeedbackRemoteSensorID(pivotEncoderID)
+      .withSensorToMechanismRatio(pivotGearRatio))
+        //  .withRotorToSensorRatio(pivotGearRatio))
+      .withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs()
+        .withForwardSoftLimitEnable(true)
+        .withReverseSoftLimitEnable(true)
+        .withForwardSoftLimitThreshold(pivotMaxAngle.getRotations())
+        .withReverseSoftLimitThreshold(pivotMinAngle.getRotations()));
+
+        /*
+         * public static final TalonFXConfiguration kPivotConfiguration = new TalonFXConfiguration()
+      .withCurrentLimits(new CurrentLimitsConfigs()
+        .withStatorCurrentLimit(60)
+        .withSupplyCurrentLimit(60)
+        .withStatorCurrentLimitEnable(true)
+        .withSupplyCurrentLimitEnable(true))
+      .withMotorOutput(new MotorOutputConfigs()
+        .withNeutralMode(NeutralModeValue.Brake)
+        .withInverted(InvertedValue.CounterClockwise_Positive))
+      .withSlot0(new Slot0Configs()
+        .withKV(0)
+        .withKA(0)
+        .withKP(180)
+        .withKI(1)
+        .withKD(20)
+        .withGravityType(GravityTypeValue.Arm_Cosine)
+        .withKG(9.14) // -0.4
         .withKS(0)) // 0.5
       .withFeedback(new FeedbackConfigs()
         //  .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
@@ -265,21 +294,22 @@ public final class Constants {
       .withSensorToMechanismRatio(pivotGearRatio))
         //  .withRotorToSensorRatio(pivotGearRatio))
       .withMotionMagic(new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(10) // Default 10
-        .withMotionMagicAcceleration(15) // Default 15
+        .withMotionMagicCruiseVelocity(30)
+        .withMotionMagicAcceleration(50) 
         .withMotionMagicJerk(0))
       .withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs()
         .withForwardSoftLimitEnable(true)
         .withReverseSoftLimitEnable(true)
         .withForwardSoftLimitThreshold(pivotMaxAngle.getRotations())
         .withReverseSoftLimitThreshold(pivotMinAngle.getRotations()));
+         */
 
     public static final CANcoderConfiguration kPivotEncoderConfiguration = new CANcoderConfiguration()
     .withMagnetSensor(new MagnetSensorConfigs()
       .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Signed_PlusMinusHalf)
       .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive));
 
-    public static final MotionMagicTorqueCurrentFOC pivotPositionControl = new MotionMagicTorqueCurrentFOC(0, 0, 0, false, false, false);
+    public static final PositionVoltage pivotPositionControl = new PositionVoltage(0, 0, true, 0, 0, true, false, false);
 
     public static final double kPivotPositionUpdateFrequency = 50; // Hertz
     public static final double kPivotErrorUpdateFrequency = 50; // Hertz
@@ -307,10 +337,10 @@ public final class Constants {
         .withNeutralMode(NeutralModeValue.Coast)
         .withInverted(InvertedValue.CounterClockwise_Positive))
       .withSlot0(new Slot0Configs()
-        .withKV(0.071) // 0.075
-        .withKP(0.5) // 0.125
+        .withKV(1) // 0.075
+        .withKP(3) // 0.125
         .withKI(0)
-        .withKD(0))
+        .withKD(0.1))
       .withFeedback(new FeedbackConfigs()
         .withSensorToMechanismRatio(shooterGearRatio));
 
