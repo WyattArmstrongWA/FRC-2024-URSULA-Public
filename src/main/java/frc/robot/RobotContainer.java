@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Commands.IndexToAmp;
 import frc.robot.Commands.IndexToShooter;
 import frc.robot.Commands.IntakeNote;
 import frc.robot.Subsystems.Amp.AmpSubsystem;
@@ -70,16 +71,17 @@ public class RobotContainer {
     // reset the field-centric heading on start button press
     m_driverCtrl.start().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
 
-    m_driverCtrl.a().whileTrue(new IntakeNote(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()));
+    m_operatorCtrl.leftBumper().whileTrue(new IntakeNote(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()));
     //m_driverCtrl.y().whileTrue(new Shoot(pivot, shooter, feeder, intake));
     // m_driverCtrl.y().whileTrue(new ScoreAmp(pivot, shooter, feeder, intake));
     //m_driverCtrl.rightBumper().whileTrue(new AlignToSpeaker());
 
-    m_operatorCtrl.y().whileTrue(new IndexToShooter(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()).alongWith(runOnce(() -> feeder.stop())).alongWith(runOnce(() -> amp.stop())));
-    m_operatorCtrl.x().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(40))));
+    m_operatorCtrl.y().whileTrue(new IndexToAmp(intake, amp, feeder)).onFalse(runOnce(() -> intake.stop()).alongWith(runOnce(() -> amp.stop())).alongWith(runOnce(() -> feeder.stop())));
+    m_operatorCtrl.povUp().whileTrue(new IndexToShooter(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()).alongWith(runOnce(() -> amp.stop())).alongWith(runOnce(() -> feeder.stop())));
+    m_operatorCtrl.x().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(30))));
     m_operatorCtrl.b().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(0))));
     m_operatorCtrl.rightBumper().onTrue(runOnce(() -> feeder.setFeederVoltage(5))).onFalse(runOnce(() -> feeder.stop()));
-    m_operatorCtrl.a().whileTrue(runOnce(() -> shooter.setVelocity(-6000/60))).onFalse(runOnce(() -> shooter.stop()));
+    m_operatorCtrl.a().whileTrue(runOnce(() -> shooter.setVelocity(-10000/60))).onFalse(runOnce(() -> shooter.stop()));
 
 
   }

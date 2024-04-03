@@ -38,7 +38,7 @@ public class LEDSubsystem extends SubsystemBase {
      * Robot LED States
      */
     private static enum LEDState {
-        START, DISABLED, DISABLED_TARGET, AUTONOMOUS, ENABLED, INTAKING, FEEDING, CLIMBING, HAVENOTE, AIMING, ARM_LOCKED, AIM_LOCKED
+        START, DISABLED, LOW_BATTERY, CONTROLLER_DISCONNECTED, DISABLED_TARGET, AUTONOMOUS, ENABLED, INTAKING, FEEDING, CLIMBING, HAVENOTE, AIMING, ARM_LOCKED, AIM_LOCKED
     }
     LEDState m_currentState = LEDState.START;
 
@@ -134,25 +134,27 @@ public class LEDSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        double a = 2;
+        double x = 3;
 
-        // LEDState newState = LEDState.DISABLED;
+        LEDState newState = LEDState.DISABLED;
 
-        // if (DriverStation.isDisabled()) {
-        //     if (m_photonVision.hasTarget()) {
-        //         newState = LEDState.DISABLED_TARGET;
-        //     } else {
-        //         newState = LEDState.DISABLED;
-        //     }            
+        if (DriverStation.isDisabled()) {
+            if (a==x) {
+                newState = LEDState.DISABLED_TARGET;
+            } else {
+                newState = LEDState.DISABLED;
+            }            
 
-        // } else if (DriverStation.isAutonomousEnabled()) {
-        //     newState = LEDState.AUTONOMOUS;
+        } else if (DriverStation.isAutonomousEnabled()) {
+            newState = LEDState.AUTONOMOUS;
 
-        // } else {
-        //     // If not Disabled or in Auto, run MatchTimer
-        //     runMatchTimerPattern();
+        } else {
+            // If not Disabled or in Auto, run MatchTimer
+            runMatchTimerPattern();
 
-        //     // If Note in Stage
-        //     if (m_stageSub.isNoteInStage()) {
+            // If Note in Stage
+            if (a==x) {
 
         //         if (m_armSub.preparing2Feed()) {
         //             // Special FEEDing pattern
@@ -187,17 +189,17 @@ public class LEDSubsystem extends SubsystemBase {
         //         // If preparing to Climb
         //         newState = LEDState.CLIMBING;
 
-        //     } else {
-        //         // Just Enabled
-        //         newState = LEDState.ENABLED;
-        //     }
-        // }
+            } else {
+                // Just Enabled
+                newState = LEDState.ENABLED;
+            }
+        }
 
-        // // If State has changed, run the state machine to change LED patterns
-        // if (newState != m_currentState) {
-        //     LEDStateMachine(newState);
-        //     m_currentState = newState;
-        // }
+        // If State has changed, run the state machine to change LED patterns
+        if (newState != m_currentState) {
+            LEDStateMachine(newState);
+            m_currentState = newState;
+        }
 
     }
     

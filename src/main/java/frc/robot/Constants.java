@@ -269,40 +269,40 @@ public final class Constants {
         .withForwardSoftLimitThreshold(pivotMaxAngle.getRotations())
         .withReverseSoftLimitThreshold(pivotMinAngle.getRotations()));
 
-        /*
-         * public static final TalonFXConfiguration kPivotConfiguration = new TalonFXConfiguration()
-      .withCurrentLimits(new CurrentLimitsConfigs()
-        .withStatorCurrentLimit(60)
-        .withSupplyCurrentLimit(60)
-        .withStatorCurrentLimitEnable(true)
-        .withSupplyCurrentLimitEnable(true))
-      .withMotorOutput(new MotorOutputConfigs()
-        .withNeutralMode(NeutralModeValue.Brake)
-        .withInverted(InvertedValue.CounterClockwise_Positive))
-      .withSlot0(new Slot0Configs()
-        .withKV(0)
-        .withKA(0)
-        .withKP(180)
-        .withKI(1)
-        .withKD(20)
-        .withGravityType(GravityTypeValue.Arm_Cosine)
-        .withKG(9.14) // -0.4
-        .withKS(0)) // 0.5
-      .withFeedback(new FeedbackConfigs()
-        //  .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-        //  .withFeedbackRemoteSensorID(pivotEncoderID)
-      .withSensorToMechanismRatio(pivotGearRatio))
-        //  .withRotorToSensorRatio(pivotGearRatio))
-      .withMotionMagic(new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(30)
-        .withMotionMagicAcceleration(50) 
-        .withMotionMagicJerk(0))
-      .withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs()
-        .withForwardSoftLimitEnable(true)
-        .withReverseSoftLimitEnable(true)
-        .withForwardSoftLimitThreshold(pivotMaxAngle.getRotations())
-        .withReverseSoftLimitThreshold(pivotMinAngle.getRotations()));
-         */
+        
+      //    public static final TalonFXConfiguration kPivotConfiguration = new TalonFXConfiguration()
+      // .withCurrentLimits(new CurrentLimitsConfigs()
+      //   .withStatorCurrentLimit(60)
+      //   .withSupplyCurrentLimit(60)
+      //   .withStatorCurrentLimitEnable(true)
+      //   .withSupplyCurrentLimitEnable(true))
+      // .withMotorOutput(new MotorOutputConfigs()
+      //   .withNeutralMode(NeutralModeValue.Brake)
+      //   .withInverted(InvertedValue.CounterClockwise_Positive))
+      // .withSlot0(new Slot0Configs()
+      //   .withKV(0)
+      //   .withKA(0)
+      //   .withKP(180)
+      //   .withKI(1)
+      //   .withKD(20)
+      //   .withGravityType(GravityTypeValue.Arm_Cosine)
+      //   .withKG(9.14) // -0.4
+      //   .withKS(0)) // 0.5
+      // .withFeedback(new FeedbackConfigs()
+      //   //  .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+      //   //  .withFeedbackRemoteSensorID(pivotEncoderID)
+      // .withSensorToMechanismRatio(pivotGearRatio))
+      //   //  .withRotorToSensorRatio(pivotGearRatio))
+      // .withMotionMagic(new MotionMagicConfigs()
+      //   .withMotionMagicCruiseVelocity(30)
+      //   .withMotionMagicAcceleration(50) 
+      //   .withMotionMagicJerk(0))
+      // .withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs()
+      //   .withForwardSoftLimitEnable(true)
+      //   .withReverseSoftLimitEnable(true)
+      //   .withForwardSoftLimitThreshold(pivotMaxAngle.getRotations())
+      //   .withReverseSoftLimitThreshold(pivotMinAngle.getRotations()));
+         
 
     public static final CANcoderConfiguration kPivotEncoderConfiguration = new CANcoderConfiguration()
     .withMagnetSensor(new MagnetSensorConfigs()
@@ -329,7 +329,7 @@ public final class Constants {
 
     public static final TalonFXConfiguration kShooterConfiguration = new TalonFXConfiguration()
       .withCurrentLimits(new CurrentLimitsConfigs()
-        .withStatorCurrentLimit(120)
+        .withStatorCurrentLimit(60)
         .withSupplyCurrentLimit(40)
         .withStatorCurrentLimitEnable(true)
         .withSupplyCurrentLimitEnable(false))
@@ -337,7 +337,7 @@ public final class Constants {
         .withNeutralMode(NeutralModeValue.Coast)
         .withInverted(InvertedValue.CounterClockwise_Positive))
       .withSlot0(new Slot0Configs()
-        .withKV(1) // 0.075
+        .withKV(2) // 0.075
         .withKP(3) // 0.125
         .withKI(0)
         .withKD(0.1))
