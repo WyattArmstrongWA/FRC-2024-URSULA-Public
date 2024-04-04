@@ -29,7 +29,7 @@ public class ShooterSubsystem extends SubsystemBase{
    */
   public void setVelocity(double rps) {
 
-    shooterTalonLeader.setControl(ShooterConstants.shooterControl.withVelocity(rps));
+    shooterTalonLeader.setControl(ShooterConstants.shooterControl.withVelocity(-rps/2));
     shooterTalonFollower.setControl(ShooterConstants.followerControl);
   }
 

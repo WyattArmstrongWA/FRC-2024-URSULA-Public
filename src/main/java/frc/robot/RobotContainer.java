@@ -67,22 +67,27 @@ public class RobotContainer {
   Pose2d odomStart = new Pose2d(0, 0, new Rotation2d(0, 0));
 
   private void configureBindings() {
+    double varAngle = 30;
     
     // reset the field-centric heading on start button press
     m_driverCtrl.start().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
 
-    m_operatorCtrl.leftBumper().whileTrue(new IntakeNote(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()));
+    m_driverCtrl.a().whileTrue(new IntakeNote(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()));
+    m_driverCtrl.rightTrigger().onTrue(runOnce(() -> feeder.setFeederVoltage(6))).onFalse(runOnce(() -> feeder.stop()));
+    m_driverCtrl.rightBumper().whileTrue(new IndexToShooter(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()).alongWith(runOnce(() -> amp.stop())).alongWith(runOnce(() -> feeder.stop())));
     //m_driverCtrl.y().whileTrue(new Shoot(pivot, shooter, feeder, intake));
     // m_driverCtrl.y().whileTrue(new ScoreAmp(pivot, shooter, feeder, intake));
     //m_driverCtrl.rightBumper().whileTrue(new AlignToSpeaker());
 
     m_operatorCtrl.y().whileTrue(new IndexToAmp(intake, amp, feeder)).onFalse(runOnce(() -> intake.stop()).alongWith(runOnce(() -> amp.stop())).alongWith(runOnce(() -> feeder.stop())));
     m_operatorCtrl.povUp().whileTrue(new IndexToShooter(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()).alongWith(runOnce(() -> amp.stop())).alongWith(runOnce(() -> feeder.stop())));
-    m_operatorCtrl.x().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(30))));
-    m_operatorCtrl.b().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(0))));
-    m_operatorCtrl.rightBumper().onTrue(runOnce(() -> feeder.setFeederVoltage(5))).onFalse(runOnce(() -> feeder.stop()));
-    m_operatorCtrl.a().whileTrue(runOnce(() -> shooter.setVelocity(-10000/60))).onFalse(runOnce(() -> shooter.stop()));
-
+    m_driverCtrl.x().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(varAngle))));
+    m_driverCtrl.b().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(0))));
+    //
+    m_driverCtrl.rightTrigger().onTrue(runOnce(() -> feeder.setFeederVoltage(5))).onFalse(runOnce(() -> feeder.stop()));
+    //m_driverCtrl.rightTrigger().onTrue(runOnce(() -> feeder.setFeederVoltage(5))).onFalse(runOnce(() -> feeder.stop()));
+    m_driverCtrl.leftTrigger().whileTrue(runOnce(() -> shooter.setVelocity(-7200/60))).onFalse(runOnce(() -> shooter.stop()));
+    m_driverCtrl.povUp().whileTrue(runOnce(() -> shooter.setVelocity(7200/60))).onFalse(runOnce(() -> shooter.stop()));
 
   }
 

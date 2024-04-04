@@ -50,14 +50,14 @@ public class FeederSubsystem extends SubsystemBase {
   public void indexNoteToFeeder() {
 
     if (feederSensor.getRange() > FeederConstants.isNotePresentTOF) {
-      setFeederVoltage(Setpoints.indexingTargetVolts);
+      setFeederVoltage(Setpoints.intakeFeedVolts);
     } else if (isNoteCenteredTOF()) {
       stop();
     } else {
       if (feederSensor.getRange() > FeederConstants.isNoteCenteredTOF) {
-        setFeederVoltage(Setpoints.indexingTargetVoltsSlow);
+        setFeederVoltage(Setpoints.slowFeedVolts);
       } else if (feederSensor.getRange() < FeederConstants.isNoteCenteredTOF) {
-        setFeederVoltage(-Setpoints.indexingTargetVoltsSlow);
+        setFeederVoltage(-Setpoints.slowFeedVolts);
       }
     }
   }

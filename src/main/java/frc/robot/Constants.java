@@ -18,7 +18,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -52,36 +52,34 @@ import frc.robot.generated.TunerConstants;
  */
 public final class Constants {
 
-    public static final boolean kIsTuningMode = false;
-        public static final double kConfigTimeoutSeconds = 0.1;
+  public static final boolean kIsTuningMode = false;
+  public static final double kConfigTimeoutSeconds = 0.1;
 
-    public static class Setpoints {
+  public static class Setpoints {
 
-        public static final double PivotStowAngle = 0;
-        public static final double ElevatorStowHeight = 0;
+    public static final double PivotStowAngle = 0;
+    public static final double ElevatorStowHeight = 0;
     
-        public static final double indexingTargetVolts = 10; 
-        public static final double indexingTargetVoltsSlow = 5;
-        public static final double indexerScoringVoltage = 8;
+    public static final double intakeFeedVolts = 10; 
+    public static final double injectFeedVolts = -8; 
+    public static final double slowFeedVolts = 4;
+    public static final double scoringFeedVolts = 8;
     
-        public static final double intakingTargetVoltage = 6;
-        public static final double outtakingTargetVoltage = -6;
+    public static final double intakingTargetVoltage = 8;
+    public static final double outtakingTargetVoltage = -8;
 
-        public static final double ampEjectTargetVoltage = 6;
-        public static final double ampInjectTargetVoltage = -6;
-
-        
+    public static final double ampEjectTargetVoltage = 6;
+    public static final double ampInjectTargetVoltage = -6;
     
-        public static final double pivotMinClamp = 0;
-        public static final double pivotMaxClamp = 60;
+    public static final double pivotMinClamp = 0;
+    public static final double pivotMaxClamp = 60;
     
-        public static final double shooterMinClamp = 0;
-        public static final double shooterMaxClamp = 6000;
-      }
+    public static final double shooterMinClamp = 0;
+    public static final double shooterMaxClamp = 11000;
+  }
 
-    public static final class AmpConstants {
+  public static final class AmpConstants {
     
-
     public static final int ampTalonID = 18; 
     public static final String ampTalonCANBus = "rio";
 
@@ -91,9 +89,7 @@ public final class Constants {
 
     public static final double isNotePresentTOF = 230; // Milimeters
     public static final double isNoteCenteredTOF = 50; // Milimeters
-    public static final double isNoteCenteredTOFTolerance = 2; // Milimeters
-
-    private static final double ampMaxDutyCycle = 0.5;
+    public static final double isNoteCenteredTOFTolerance = 5; // Milimeters
 
     public static final TalonFXConfiguration kAmpConfiguration = new TalonFXConfiguration()
       .withCurrentLimits(new CurrentLimitsConfigs()
@@ -105,8 +101,8 @@ public final class Constants {
         .withNeutralMode(NeutralModeValue.Coast)
         .withInverted(InvertedValue.CounterClockwise_Positive));
 
-    public static final DutyCycleOut ampDutyCycle = new DutyCycleOut(0, true, false, false, false);
-    public static final TorqueCurrentFOC ampTorqueControl = new TorqueCurrentFOC(0, ampMaxDutyCycle, 0, false, false, false);
+    public static final DutyCycleOut ampDutyCycle = new DutyCycleOut(0, false, false, false, false);
+    public static final TorqueCurrentFOC ampTorqueControl = new TorqueCurrentFOC(0, 0.95, 0, false, false, false);
   }
 
   public static final class ElevatorConstants {
@@ -160,12 +156,12 @@ public final class Constants {
 
     public static double elevatorMetersToRotations(double meters) {
 
-            return meters / (2 * Math.PI * elevatorPinionRadius);
+      return meters / (2 * Math.PI * elevatorPinionRadius);
     }
 
     public static double elevatorRotationsToMeters(double rotations) {
 
-            return rotations * (2 * Math.PI * elevatorPinionRadius);
+      return rotations * (2 * Math.PI * elevatorPinionRadius);
     }
   }
 
@@ -194,8 +190,7 @@ public final class Constants {
         .withNeutralMode(NeutralModeValue.Coast)
         .withInverted(InvertedValue.CounterClockwise_Positive));
 
-    public static final DutyCycleOut feederDutyCycle = new DutyCycleOut(0, true, false, false, false);
-
+    public static final DutyCycleOut feederDutyCycle = new DutyCycleOut(0, false, false, false, false);
     public static final TorqueCurrentFOC feederTorqueControl = new TorqueCurrentFOC(0, feederMaxDutyCycle, 0, false, false, false);
   }
 
@@ -210,8 +205,6 @@ public final class Constants {
 
     public static final double isNotePresentTOF = 220; // Milimeters
 
-    private static final double intakeMaxDutyCycle = 0.5;
-
     public static final TalonFXConfiguration kIntakeConfiguration = new TalonFXConfiguration()
       .withCurrentLimits(new CurrentLimitsConfigs()
         .withStatorCurrentLimit(40)
@@ -223,9 +216,7 @@ public final class Constants {
         .withInverted(InvertedValue.Clockwise_Positive));
 
     public static final DutyCycleOut intakeDutyCycle = new DutyCycleOut(0, true, false, false, false);
-
-    public static final TorqueCurrentFOC intakeTorqueControl = new TorqueCurrentFOC(0, intakeMaxDutyCycle, 0, false, false, false);
-
+    public static final TorqueCurrentFOC intakeTorqueControl = new TorqueCurrentFOC(0, 0.95, 0, false, false, false);
   }
 
   public static final class PivotConstants {
@@ -269,41 +260,6 @@ public final class Constants {
         .withForwardSoftLimitThreshold(pivotMaxAngle.getRotations())
         .withReverseSoftLimitThreshold(pivotMinAngle.getRotations()));
 
-        
-      //    public static final TalonFXConfiguration kPivotConfiguration = new TalonFXConfiguration()
-      // .withCurrentLimits(new CurrentLimitsConfigs()
-      //   .withStatorCurrentLimit(60)
-      //   .withSupplyCurrentLimit(60)
-      //   .withStatorCurrentLimitEnable(true)
-      //   .withSupplyCurrentLimitEnable(true))
-      // .withMotorOutput(new MotorOutputConfigs()
-      //   .withNeutralMode(NeutralModeValue.Brake)
-      //   .withInverted(InvertedValue.CounterClockwise_Positive))
-      // .withSlot0(new Slot0Configs()
-      //   .withKV(0)
-      //   .withKA(0)
-      //   .withKP(180)
-      //   .withKI(1)
-      //   .withKD(20)
-      //   .withGravityType(GravityTypeValue.Arm_Cosine)
-      //   .withKG(9.14) // -0.4
-      //   .withKS(0)) // 0.5
-      // .withFeedback(new FeedbackConfigs()
-      //   //  .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-      //   //  .withFeedbackRemoteSensorID(pivotEncoderID)
-      // .withSensorToMechanismRatio(pivotGearRatio))
-      //   //  .withRotorToSensorRatio(pivotGearRatio))
-      // .withMotionMagic(new MotionMagicConfigs()
-      //   .withMotionMagicCruiseVelocity(30)
-      //   .withMotionMagicAcceleration(50) 
-      //   .withMotionMagicJerk(0))
-      // .withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs()
-      //   .withForwardSoftLimitEnable(true)
-      //   .withReverseSoftLimitEnable(true)
-      //   .withForwardSoftLimitThreshold(pivotMaxAngle.getRotations())
-      //   .withReverseSoftLimitThreshold(pivotMinAngle.getRotations()));
-         
-
     public static final CANcoderConfiguration kPivotEncoderConfiguration = new CANcoderConfiguration()
     .withMagnetSensor(new MagnetSensorConfigs()
       .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Signed_PlusMinusHalf)
@@ -314,7 +270,7 @@ public final class Constants {
     public static final double kPivotPositionUpdateFrequency = 50; // Hertz
     public static final double kPivotErrorUpdateFrequency = 50; // Hertz
 
-    public static final Rotation2d angleErrorTolerance = Rotation2d.fromDegrees(0.4); // Degrees
+    public static final Rotation2d angleErrorTolerance = Rotation2d.fromDegrees(1); // Degrees
   }
 
   public static final class ShooterConstants {
@@ -329,25 +285,24 @@ public final class Constants {
 
     public static final TalonFXConfiguration kShooterConfiguration = new TalonFXConfiguration()
       .withCurrentLimits(new CurrentLimitsConfigs()
-        .withStatorCurrentLimit(60)
-        .withSupplyCurrentLimit(40)
+        .withStatorCurrentLimit(80)
+        .withSupplyCurrentLimit(60)
         .withStatorCurrentLimitEnable(true)
-        .withSupplyCurrentLimitEnable(false))
+        .withSupplyCurrentLimitEnable(true))
       .withMotorOutput(new MotorOutputConfigs()
         .withNeutralMode(NeutralModeValue.Coast)
         .withInverted(InvertedValue.CounterClockwise_Positive))
       .withSlot0(new Slot0Configs()
-        .withKV(2) // 0.075
-        .withKP(3) // 0.125
+        //.withKS(1) 4499: s=1, v=.2, p=12, 
+        .withKV(.5) // 0.075
+        .withKP(.37) // 0.125
         .withKI(0)
-        .withKD(0.1))
+        .withKD(0))
       .withFeedback(new FeedbackConfigs()
         .withSensorToMechanismRatio(shooterGearRatio));
 
-    public static final VelocityTorqueCurrentFOC shooterControl = new VelocityTorqueCurrentFOC(0, 0, 0, 0, false, false, false);
-
+    public static final VelocityVoltage shooterControl = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
     public static final Follower followerControl = new Follower(shooterTalonLeaderID, true);
-
     public static final double kShooterVelocityUpdateFrequency = 10; // Hertz
   }
 
@@ -431,7 +386,7 @@ static {
     }
 
     public static class ControllerConstants {
-        public static final double triggerThreashold = 0.4;
+        public static final double triggerThreshold = 0.4;
 
     }
 

@@ -17,7 +17,6 @@ import frc.robot.Util.ErrorCheckUtil.CommonErrorNames;
 
 public class PivotSubsystem extends SubsystemBase {
   private final TalonFX pivotTalon = configurePivotTalon(TalonFXFactory.createTalon(PivotConstants.pivotTalonID, PivotConstants.pivotTalonCANBus, PivotConstants.kPivotConfiguration));
-
   private final CANcoder pivotEncoder = new CANcoder(PivotConstants.pivotEncoderID, PivotConstants.pivotEncoderCANBus);
 
 

@@ -38,7 +38,7 @@ public class IndexToAmp extends Command {
     }
         intake.setIntakeVoltage(Setpoints.intakingTargetVoltage);
         amp.setAmpVoltage(Setpoints.ampEjectTargetVoltage);
-        feeder.setFeederVoltage(-Setpoints.indexingTargetVolts);
+        feeder.setFeederVoltage(-Setpoints.intakeFeedVolts);
 }
 
   // Called once the command ends or is interrupted.
