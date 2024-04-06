@@ -7,7 +7,6 @@ import com.playingwithfusion.TimeOfFlight;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FeederConstants;
-import frc.robot.Constants.Setpoints;
 import frc.robot.Util.TalonFXFactory;
 
 public class FeederSubsystem extends SubsystemBase {
@@ -19,7 +18,7 @@ public class FeederSubsystem extends SubsystemBase {
 
   public FeederSubsystem() {
 
-    feederSensor.setRangingMode(FeederConstants.feederSensorRange, FeederConstants.feederSfeederleTime);
+    feederSensor.setRangingMode(FeederConstants.feederSensorRange, FeederConstants.feederSampleTime);
     feederSensor.setRangeOfInterest(8, 8, 12, 12);
   }
 
@@ -35,31 +34,12 @@ public class FeederSubsystem extends SubsystemBase {
     feederTalon.setControl(new VoltageOut(volts, true, false, false, false));
   }
 
-  public boolean isNoteCenteredTOF() {
-    return Math.abs(feederSensor.getRange() - FeederConstants.isNoteCenteredTOF) < FeederConstants.isNoteCenteredTOFTolerance;
-  }
-
   public boolean isNotePresentTOF() {
     return feederSensor.getRange() < FeederConstants.isNotePresentTOF;
   }
 
   public double getRangeTOF() {
     return feederSensor.getRange();
-  }
-
-  public void indexNoteToFeeder() {
-
-    if (feederSensor.getRange() > FeederConstants.isNotePresentTOF) {
-      setFeederVoltage(Setpoints.intakeFeedVolts);
-    } else if (isNoteCenteredTOF()) {
-      stop();
-    } else {
-      if (feederSensor.getRange() > FeederConstants.isNoteCenteredTOF) {
-        setFeederVoltage(Setpoints.slowFeedVolts);
-      } else if (feederSensor.getRange() < FeederConstants.isNoteCenteredTOF) {
-        setFeederVoltage(-Setpoints.slowFeedVolts);
-      }
-    }
   }
 
   public void stop() {

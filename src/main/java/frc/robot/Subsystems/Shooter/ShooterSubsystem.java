@@ -1,5 +1,6 @@
 package frc.robot.Subsystems.Shooter;
 
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,18 +19,24 @@ public class ShooterSubsystem extends SubsystemBase{
   private TalonFX shooterTalonFollower = configureShooterTalon(TalonFXFactory.createTalon(ShooterConstants.shooterTalonFollowerID,
       ShooterConstants.shooterTalonCANBus, ShooterConstants.kShooterConfiguration));
 
+  private Orchestra m_orchestra = new Orchestra();
+
   public ShooterSubsystem() {
     shooterTalonFollower.setControl(ShooterConstants.followerControl);
+
+    m_orchestra.addInstrument(shooterTalonLeader);
+    m_orchestra.loadMusic("wonderwall.chrp");
   }
 
     /**
    * Set both shooter motors to the same speed
    * 
-   * @param rps rotations per second
+   * @param rpm rotations per minute
    */
-  public void setVelocity(double rps) {
+  public void setVelocity(double rpm) {
 
-    shooterTalonLeader.setControl(ShooterConstants.shooterControl.withVelocity(-rps/2));
+   // shooterTalonLeader.setControl(ShooterConstants.shooterControl.withVelocity(-rps/2));
+   shooterTalonLeader.setControl(ShooterConstants.shooterControl.withVelocity(rpm/60));
     shooterTalonFollower.setControl(ShooterConstants.followerControl);
   }
 
@@ -54,6 +61,10 @@ public class ShooterSubsystem extends SubsystemBase{
 
   public double getVelocity() {
     return shooterTalonFollower.getVelocity().getValue();
+  }
+
+  public void singWonderwall() {
+    m_orchestra.play();
   }
 
   public void stop() {

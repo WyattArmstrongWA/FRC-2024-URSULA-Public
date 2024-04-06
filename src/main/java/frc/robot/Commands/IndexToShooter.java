@@ -33,12 +33,15 @@ public class IndexToShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (intake.isNotePresentTOF() || feeder.isNotePresentTOF() || amp.isNotePresentTOF()) {
-      //Leds.getInstance().hasGamePiece = noteDetected;
-    }
-        intake.setIntakeVoltage(Setpoints.intakingTargetVoltage);
-        feeder.indexNoteToFeeder();
-        amp.setAmpVoltage(Setpoints.ampInjectTargetVoltage);
+        if(!feeder.isNotePresentTOF()) {
+          intake.setIntakeVoltage(Setpoints.intakingTargetVoltage);
+          feeder.setFeederVoltage(Setpoints.intakeFeedVolts);
+          amp.setAmpVoltage(Setpoints.ampInjectTargetVoltage);
+        } else {
+          intake.stop();
+          feeder.stop();
+          amp.stop();
+        }
 }
 
   // Called once the command ends or is interrupted.
@@ -52,7 +55,7 @@ public class IndexToShooter extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (feeder.isNoteCenteredTOF()) {
+    if (feeder.isNotePresentTOF()) {
       return true;
     }
     return false;

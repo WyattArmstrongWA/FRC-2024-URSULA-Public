@@ -41,8 +41,16 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeSensor.getRange() < IntakeConstants.isNotePresentTOF;
   }
 
+  public boolean isNoteCenteredTOF() {
+    return intakeSensor.getRange() < 100;
+  }
+
   public double getRangeTOF() {
     return intakeSensor.getRange();
+  }
+
+  public boolean isIntakeRunning() {
+    return Math.abs(intakeTalon.get()) > 0.01;
   }
 
   @Override

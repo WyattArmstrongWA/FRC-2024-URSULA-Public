@@ -4,6 +4,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
@@ -96,6 +97,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("ElevatorError", getSetpointError());
+    SmartDashboard.putNumber("ElevatorFollowerCurrentHeight", getFollowerPosition());
+    SmartDashboard.putNumber("ElevatorLeaderCurrentHeight", getLeaderPosition());
   }
 
     private TalonFX configureElevatorTalon(TalonFX motor) {

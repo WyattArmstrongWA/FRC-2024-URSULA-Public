@@ -4,70 +4,79 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
-
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Subsystems.Amp.AmpSubsystem;
-import frc.robot.Subsystems.Feeder.FeederSubsystem;
-import frc.robot.Subsystems.Intake.IntakeSubsystem;
-import frc.robot.Subsystems.Pivot.PivotSubsystem;
-import frc.robot.Subsystems.Shooter.ShooterSubsystem;
+
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private IntakeSubsystem intake;
-  private FeederSubsystem feeder;
-  private AmpSubsystem amp;
-  private PivotSubsystem pivot;
-  private ShooterSubsystem shooter;
-
+  private Command m_lastAutonomousCommand;
   private RobotContainer m_robotContainer;
+  private Field2d m_autoTraj = new Field2d();
+  private List<Pose2d> m_pathsToShow = new ArrayList<Pose2d>();
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    intake = new IntakeSubsystem();
-    feeder = new FeederSubsystem();
-    amp = new AmpSubsystem();
-    pivot = new PivotSubsystem();
-    shooter = new ShooterSubsystem();
 
     m_robotContainer.m_drivetrain.getDaqThread().setThreadPriority(99);
 
     SignalLogger.start();
+    FollowPathCommand.warmupCommand().schedule(); //Added to warmup pathplanner class load
+
+    RobotController.setBrownoutVoltage(6.0);
   }
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
-    SmartDashboard.putBoolean("intake sensor", intake.isNotePresentTOF());
-    SmartDashboard.putNumber("intake sensor range", intake.getRangeTOF());
-    SmartDashboard.putBoolean("feeder sensor", feeder.isNotePresentTOF());
-    SmartDashboard.putBoolean("feeder sensor centered", feeder.isNoteCenteredTOF());
-    SmartDashboard.putNumber("feeder sensor range", feeder.getRangeTOF());
-    SmartDashboard.putBoolean("amp sensor", amp.isNotePresentTOF());
-    SmartDashboard.putBoolean("amp sensor centered", amp.isNotePresentTOF());
-    SmartDashboard.putNumber("amp sensor range", amp.getRangeTOF());
-    SmartDashboard.putNumber("shooter angle", pivot.getAngle().getDegrees());
-    SmartDashboard.putNumber("shooter rpm", shooter.getVelocity()*60);
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    SmartDashboard.putData("Auto Path Preview",m_autoTraj);
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+        // Get currently selected command
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        // Check if is the same as the last one
+        if (m_autonomousCommand != m_lastAutonomousCommand && m_autonomousCommand != null) {
+            // Check if its contained in the list of our autos
+            if (AutoBuilder.getAllAutoNames().contains(m_autonomousCommand.getName())) {
+                // Clear the current path
+                m_pathsToShow.clear();
+                // Grabs all paths from the auto
+                for (PathPlannerPath path : PathPlannerAuto.getPathGroupFromAutoFile(m_autonomousCommand.getName())) {
+                    // Adds all poses to master list
+                    m_pathsToShow.addAll(path.getPathPoses());
+                }
+                // Displays all poses on Field2d widget
+                m_autoTraj.getObject("traj").setPoses(m_pathsToShow);
+            }
+        }
+        m_lastAutonomousCommand = m_autonomousCommand;
+    }
 
   @Override
   public void disabledExit() {}
 
   @Override
   public void autonomousInit() {
-    //m_robotContainer.drivetrain.setForwardHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red ? 0 : 180));
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -98,6 +107,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.shooter.singWonderwall();
   }
 
   @Override

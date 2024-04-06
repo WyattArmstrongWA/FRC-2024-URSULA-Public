@@ -4,9 +4,9 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.playingwithfusion.TimeOfFlight;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AmpConstants;
-import frc.robot.Constants.Setpoints;
 import frc.robot.Util.TalonFXFactory;
 
 public class AmpSubsystem extends SubsystemBase {
@@ -31,11 +31,8 @@ public class AmpSubsystem extends SubsystemBase {
   }
 
   public void setAmpVoltage(double volts) {
+   // m_orchestra.pause();
     ampTalon.setControl(new VoltageOut(volts, true, false, false, false));
-  }
-
-  public boolean isNoteCenteredTOF() {
-    return Math.abs(ampSensor.getRange() - AmpConstants.isNoteCenteredTOF) < AmpConstants.isNoteCenteredTOFTolerance;
   }
 
   public boolean isNotePresentTOF() {
@@ -46,19 +43,12 @@ public class AmpSubsystem extends SubsystemBase {
     return ampSensor.getRange();
   }
 
-  public void indexNoteToAmp() {
+  public boolean isFeedToAmp() {
+    return ampTalon.get() > 0.01;
+  }
 
-    if (ampSensor.getRange() > AmpConstants.isNotePresentTOF) {
-      setAmpVoltage(Setpoints.ampEjectTargetVoltage);
-    } else if (isNoteCenteredTOF()) {
-      stop();
-    } else {
-      if (ampSensor.getRange() > AmpConstants.isNoteCenteredTOF) {
-        setAmpVoltage(Setpoints.ampEjectTargetVoltage);
-      } else if (ampSensor.getRange() < AmpConstants.isNoteCenteredTOF) {
-        setAmpVoltage(Setpoints.ampInjectTargetVoltage);
-      }
-    }
+  public boolean isFeedToShooter() {
+    return ampTalon.get() < -0.01;
   }
 
   public void stop() {
@@ -67,6 +57,8 @@ public class AmpSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("amp speed", ampTalon.get());
+    
   }
 
   private TalonFX configureAmpTalon(TalonFX motor) {

@@ -6,23 +6,23 @@ package frc.robot.Commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Setpoints;
 import frc.robot.Subsystems.Amp.AmpSubsystem;
-import frc.robot.Subsystems.Feeder.FeederSubsystem;
+import frc.robot.Subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.Subsystems.Intake.IntakeSubsystem;
 
 public class IndexToAmp extends Command {
 
   private IntakeSubsystem intake;
   private AmpSubsystem amp;
-  private FeederSubsystem feeder;
+  private ElevatorSubsystem elevator;
 
   /** Creates a new IntakeNote. */
-  public IndexToAmp(IntakeSubsystem intake, AmpSubsystem amp, FeederSubsystem feeder){
+  public IndexToAmp(IntakeSubsystem intake, AmpSubsystem amp, ElevatorSubsystem elevator){
 
     this.intake = intake;
     this.amp = amp;
-    this.feeder = feeder;
+    this.elevator = elevator;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake, amp, feeder);
+    addRequirements(intake, amp, elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -33,25 +33,36 @@ public class IndexToAmp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (intake.isNotePresentTOF() || amp.isNotePresentTOF()) {
-      //Leds.getInstance().hasGamePiece = noteDetected;
-    }
-        intake.setIntakeVoltage(Setpoints.intakingTargetVoltage);
+
+    if(intake.isNotePresentTOF()) {
+      elevator.setHeight(0);
+      if(elevator.isAtSetpoint()) {
+        intake.setIntakeVoltage(3);
         amp.setAmpVoltage(Setpoints.ampEjectTargetVoltage);
-        feeder.setFeederVoltage(-Setpoints.intakeFeedVolts);
+      } else {
+        intake.stop();
+        amp.setAmpVoltage(Setpoints.ampEjectTargetVoltage);
+      }
+    }
+     else {
+      elevator.setHeight(0.025);
+      intake.setIntakeVoltage(Setpoints.intakingTargetVoltage);
+      amp.setAmpVoltage(Setpoints.ampEjectTargetVoltage);
+    }
 }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stop();
+    elevator.setHeight(0);
     amp.stop();
+    intake.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (amp.isNoteCenteredTOF()) {
+    if (amp.isNotePresentTOF()) {
       return true;
     }
     return false;
