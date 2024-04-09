@@ -33,7 +33,7 @@ public class IndexToShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        if(!feeder.isNotePresentTOF()) {
+         if(!feeder.isNotePresentTOF()) {
           intake.setIntakeVoltage(Setpoints.intakingTargetVoltage);
           feeder.setFeederVoltage(Setpoints.intakeFeedVolts);
           amp.setAmpVoltage(Setpoints.ampInjectTargetVoltage);
@@ -56,8 +56,8 @@ public class IndexToShooter extends Command {
   @Override
   public boolean isFinished() {
     if (feeder.isNotePresentTOF()) {
-      return true;
+       return true;
     }
-    return false;
-  }
+     return false;
+   }
 }

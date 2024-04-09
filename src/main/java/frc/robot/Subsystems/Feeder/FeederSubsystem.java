@@ -7,6 +7,7 @@ import com.playingwithfusion.TimeOfFlight;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FeederConstants;
+import frc.robot.Constants.Setpoints;
 import frc.robot.Util.TalonFXFactory;
 
 public class FeederSubsystem extends SubsystemBase {
@@ -42,6 +43,10 @@ public class FeederSubsystem extends SubsystemBase {
     return feederSensor.getRange();
   }
 
+  public boolean isFeederRunning() {
+    return Math.abs(feederTalon.get()) > 0.01;
+  }
+
   public void stop() {
     feederTalon.setControl(FeederConstants.feederDutyCycle.withOutput(0));
   }
@@ -54,4 +59,12 @@ public class FeederSubsystem extends SubsystemBase {
     return motor;
   }
 
+  public void feedNoteToBeam() {
+
+    if (!isNotePresentTOF()) {
+      setFeederVoltage(Setpoints.intakeFeedVolts);
+    } else {
+      stop();
+    }
+  }
 }

@@ -7,6 +7,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.PivotConstants;
@@ -79,6 +81,13 @@ public class PivotSubsystem extends SubsystemBase {
   public void setPivotVoltage(double volts) {
     pivotTalon.setControl(new VoltageOut(volts));
   }
+
+  
+  // To position for Intake, move Arm to INTAKE position
+    public Command prepareForIntakeCommand() {
+        return new RunCommand(()-> this.setAngle(Setpoints.PivotIntakeAngle), this)
+            .until(()->this.isAtSetpoint());
+    }   
 
   @Override
   public void periodic() {

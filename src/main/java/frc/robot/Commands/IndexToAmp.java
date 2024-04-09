@@ -39,16 +39,16 @@ public class IndexToAmp extends Command {
       if(elevator.isAtSetpoint()) {
         intake.setIntakeVoltage(3);
         amp.setAmpVoltage(Setpoints.ampEjectTargetVoltage);
-      } else {
-        intake.stop();
-        amp.setAmpVoltage(Setpoints.ampEjectTargetVoltage);
-      }
-    }
-     else {
-      elevator.setHeight(0.025);
-      intake.setIntakeVoltage(Setpoints.intakingTargetVoltage);
-      amp.setAmpVoltage(Setpoints.ampEjectTargetVoltage);
-    }
+       } else {
+         intake.stop();
+         amp.setAmpVoltage(Setpoints.ampEjectTargetVoltage);
+       }
+     }
+      else {
+       elevator.setHeight(0.025);
+       intake.setIntakeVoltage(Setpoints.intakingTargetVoltage);
+       amp.setAmpVoltage(Setpoints.ampEjectTargetVoltage);
+     }
 }
 
   // Called once the command ends or is interrupted.
@@ -59,12 +59,12 @@ public class IndexToAmp extends Command {
     intake.stop();
   }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    if (amp.isNotePresentTOF()) {
-      return true;
-    }
-    return false;
-  }
+   // Returns true when the command should end.
+   @Override
+   public boolean isFinished() {
+     if (amp.isNotePresentTOF()) {
+       return true;
+     }
+   return false;
+   }
 }

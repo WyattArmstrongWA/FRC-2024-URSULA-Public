@@ -36,7 +36,7 @@ public class LEDSubsystem extends SubsystemBase {
     CommandSwerveDrivetrain m_driveSub;
     
     // Control everything with a CANdle
-    private static final CANdle m_candle = new CANdle(20);
+    private static final CANdle m_candle = new CANdle(20, "rio");
 
     /*
      * Robot LED States
@@ -63,10 +63,12 @@ public class LEDSubsystem extends SubsystemBase {
     Color green = new Color(0, 255, 0);
     Color blue = new Color(0, 0, 255);
     Color yellow = new Color(255, 255, 0);
-    Color cyan = new Color(0, 242, 255);
+    Color cyan = new Color(0, 255, 240);
     Color magenta = new Color(255, 0, 255);
-    Color brown = new Color(210, 105, 30);
-    Color pink = new Color(195, 0, 255);
+    Color brown = new Color(166, 41, 41);
+    Color pink = new Color(255, 60, 150);
+    Color purple = new Color(170, 0, 255);
+
 
     /*
      * LED Segments
@@ -110,10 +112,12 @@ public class LEDSubsystem extends SubsystemBase {
     public LEDSubsystem(
                         IntakeSubsystem intakeSub,
                         ShooterSubsystem shootSub,
-                        CommandSwerveDrivetrain driveSub) {
+                        CommandSwerveDrivetrain driveSub, AmpSubsystem ampSub, FeederSubsystem feederSub) {
         m_intakeSub = intakeSub;
         m_shooterSub = shootSub;
         m_driveSub = driveSub;
+        m_ampSub = ampSub;
+        m_feederSub = feederSub;
 
         m_candle.configFactoryDefault();
         
@@ -141,7 +145,7 @@ public class LEDSubsystem extends SubsystemBase {
         LEDState newState = LEDState.DISABLED;
 
         if (DriverStation.isDisabled()) {
-            if (RobotController.getBatteryVoltage() < 11.8) {
+            if (RobotController.getBatteryVoltage() < 12.3) {
                 newState = LEDState.DISABLED_LOW_BATTERY;
             } else if (a==x) {
                 newState = LEDState.DISABLED_TARGET;
@@ -160,7 +164,10 @@ public class LEDSubsystem extends SubsystemBase {
                     newState = LEDState.FEEDING_AMP;
                 } else if (m_ampSub.isFeedToShooter()) {
                     newState = LEDState.FEEDING_SHOOTER;
-                } else {
+                } else if(m_feederSub.isNotePresentTOF()) {
+                    newState = LEDState.HAVENOTE_SCORING;
+                }
+                else {
                     newState = LEDState.HAVENOTE_INTAKE;
                 }
             } else if (m_ampSub.isFeedToAmp() && m_intakeSub.isIntakeRunning()  && !m_ampSub.isNotePresentTOF()) {
@@ -277,8 +284,8 @@ public class LEDSubsystem extends SubsystemBase {
 
         case AMPING:
             m_Matrix.setOff();
-            m_VerticalLeft.setAnimation(a_LeftPinkFlow);
-            m_VerticalRight.setAnimation(a_RightPinkFlow);
+            m_VerticalLeft.setAnimation(a_LeftPurpleFlow);
+            m_VerticalRight.setAnimation(a_RightPurpleFlow);
         break;
             
 
@@ -315,8 +322,8 @@ public class LEDSubsystem extends SubsystemBase {
         m_VerticalLeft.setOff();
     }
     
-    LEDSegment m_Matrix = new LEDSegment(0, 8, 0);
-    LEDSegment m_VerticalLeft = new LEDSegment(8, 47, 1);
+    LEDSegment m_Matrix = new LEDSegment(0, 1, 0);
+    LEDSegment m_VerticalLeft = new LEDSegment(2, 47, 1);
     LEDSegment m_VerticalRight = new LEDSegment(55, 46, 2);
    
     Animation a_WhiteLeftStrobe = new StrobeAnimation(white.r, white.g, white.b, 0, 0.5, m_VerticalLeft.segmentSize, m_VerticalLeft.startIndex); // Flash
@@ -349,8 +356,8 @@ public class LEDSubsystem extends SubsystemBase {
     Animation a_LeftCyanFlow = new ColorFlowAnimation(cyan.r, cyan.g, cyan.b, 0, 0.95, m_VerticalLeft.segmentSize, Direction.Backward, m_VerticalLeft.startIndex);
     Animation a_RightCyanFlow = new ColorFlowAnimation(cyan.r, cyan.g, cyan.b, 0, 0.95, m_VerticalRight.segmentSize, Direction.Forward, m_VerticalRight.startIndex);
 
-    Animation a_LeftPinkFlow = new ColorFlowAnimation(pink.r, pink.g, pink.b, 0, 0.95, m_VerticalLeft.segmentSize, Direction.Backward, m_VerticalLeft.startIndex);
-    Animation a_RightPinkFlow = new ColorFlowAnimation(pink.r, pink.g, pink.b, 0, 0.95, m_VerticalRight.segmentSize, Direction.Forward, m_VerticalRight.startIndex);
+    Animation a_LeftPurpleFlow = new ColorFlowAnimation(purple.r, purple.g, purple.b, 0, 0.95, m_VerticalLeft.segmentSize, Direction.Backward, m_VerticalLeft.startIndex);
+    Animation a_RightPurpleFlow = new ColorFlowAnimation(purple.r, purple.g, purple.b, 0, 0.95, m_VerticalRight.segmentSize, Direction.Forward, m_VerticalRight.startIndex);
 
     Animation a_LeftGreenTwinkle = new ColorFlowAnimation(green.r, green.g, green.b, 0, 0.2, m_VerticalLeft.segmentSize, Direction.Backward, m_VerticalLeft.startIndex);
     Animation a_RightGreenTwinkle = new ColorFlowAnimation(green.r, green.g, green.b, 0, 0.2, m_VerticalRight.segmentSize, Direction.Forward, m_VerticalRight.startIndex);

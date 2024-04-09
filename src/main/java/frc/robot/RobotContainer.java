@@ -13,33 +13,30 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 //import com.pathplanner.lib.auto.NamedCommands;
 
-import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
-
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-//import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.Commands.IndexToAmp;
-import frc.robot.Commands.IndexToShooter;
-import frc.robot.Commands.IntakeNote;
+import frc.robot.Commands.Shoot;
 import frc.robot.Subsystems.Amp.AmpSubsystem;
 import frc.robot.Subsystems.Drivetrain.CommandSwerveDrivetrain;
 import frc.robot.Subsystems.Drivetrain.Telemetry;
 import frc.robot.Subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.Subsystems.Feeder.FeederSubsystem;
 import frc.robot.Subsystems.Intake.IntakeSubsystem;
+import frc.robot.Subsystems.LED.LEDSubsystem;
+import frc.robot.Subsystems.Peripherals.Vision;
 import frc.robot.Subsystems.Pivot.PivotSubsystem;
 import frc.robot.Subsystems.Shooter.ShooterSubsystem;
 import frc.robot.Util.CommandXboxPS5Controller;
-import frc.robot.Vision.Limelight;
 import frc.robot.generated.TunerConstants;
 
 public class RobotContainer { 
@@ -77,18 +74,25 @@ private Supplier<SwerveRequest> m_controlStyle;
       .withDeadband(m_MaxSpeed * 0.2) // Deadband is handled on input
       .withRotationalDeadband(m_MaxAngularRate * 0.1);
 
+    SwerveRequest.FieldCentricFacingAngle m_head = new SwerveRequest.FieldCentricFacingAngle()
+      .withDriveRequestType(DriveRequestType.Velocity);
+      SwerveRequest.FieldCentricFacingAngle m_cardinal = new SwerveRequest.FieldCentricFacingAngle()
+      .withDriveRequestType(DriveRequestType.Velocity);
+
   Telemetry m_logger = new Telemetry(m_MaxSpeed);
 
   Pose2d odomStart = new Pose2d(0, 0, new Rotation2d(0, 0));
 
-  Limelight vision = new Limelight(m_drivetrain);
+  //VisionSubsystem vision = new VisionSubsystem(m_drivetrain);
 
-  IntakeSubsystem intake = new IntakeSubsystem();
-  FeederSubsystem feeder = new FeederSubsystem();
-  AmpSubsystem amp = new AmpSubsystem();
-  PivotSubsystem pivot = new PivotSubsystem();
-  ShooterSubsystem shooter = new ShooterSubsystem();
-  ElevatorSubsystem elevator = new ElevatorSubsystem();
+  IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+  Vision m_vision = new Vision();
+  AmpSubsystem m_ampSubsystem = new AmpSubsystem();
+  PivotSubsystem m_pivotSubsystem = new PivotSubsystem();
+  ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
+  FeederSubsystem m_feederSubsystem = new FeederSubsystem();
+  LEDSubsystem m_ledSubsystemSubsystem = new LEDSubsystem(m_intakeSubsystem, m_shooterSubsystem, m_drivetrain, m_ampSubsystem, m_feederSubsystem);
 
 
   public RobotContainer() {
@@ -97,6 +101,22 @@ private Supplier<SwerveRequest> m_controlStyle;
 
      // Sets forward reference for drive to always be towards red alliance
      m_drive.ForwardReference = ForwardReference.RedAlliance;
+
+     /* Dynamic turning PID */
+     m_head.ForwardReference = ForwardReference.RedAlliance;
+     m_head.HeadingController.setP(25);
+     m_head.HeadingController.setI(0);
+     m_head.HeadingController.setD(2); 
+     m_head.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+     m_head.HeadingController.setTolerance(Units.degreesToRadians(0.5));
+
+     /* Static turning PID */
+     m_cardinal.ForwardReference = ForwardReference.RedAlliance;
+     m_cardinal.HeadingController.setP(22);
+     m_cardinal.HeadingController.setI(0);
+     m_cardinal.HeadingController.setD(1.5);
+     m_cardinal.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+     m_cardinal.HeadingController.setTolerance(Units.degreesToRadians(0.01));
 
      configureSmartDashboard();
 
@@ -171,24 +191,33 @@ private void configureSmartDashboard() {
 }
 
   private void configureButtonBindings() {
-
-    double varAngle = 57.2;
     
     // reset the field-centric heading on start button press
     m_driverCtrl.start().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
 
-    m_driverCtrl.a().whileTrue(new IntakeNote(intake)).onFalse(runOnce(() -> intake.stop()));
-    m_driverCtrl.rightTrigger().onTrue(runOnce(() -> feeder.setFeederVoltage(6))).onFalse(runOnce(() -> feeder.stop()));
-    m_driverCtrl.rightBumper().whileTrue(new IndexToShooter(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()).alongWith(runOnce(() -> amp.stop())).alongWith(runOnce(() -> feeder.stop())));
-    m_driverCtrl.leftBumper().whileTrue(new IndexToAmp(intake, amp, elevator)).onFalse(runOnce(() -> intake.stop()).alongWith(runOnce(() -> amp.stop())).alongWith(runOnce(() -> feeder.stop())));
-    m_driverCtrl.x().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(varAngle))));
-    m_driverCtrl.b().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(1))));
-    m_driverCtrl.povRight().onTrue(runOnce(() -> elevator.setHeight(.135)));
-    m_driverCtrl.povLeft().onTrue(runOnce(() -> elevator.setHeight(0)));
-    m_driverCtrl.rightTrigger().onTrue(runOnce(() -> feeder.setFeederVoltage(10))).onFalse(runOnce(() -> feeder.stop()));
-    m_driverCtrl.leftTrigger().whileTrue(runOnce(() -> shooter.setVelocity(-5500/60))).onFalse(runOnce(() -> shooter.stop()));
-    m_driverCtrl.povUp().whileTrue(runOnce(() -> shooter.setVelocity(-5600/60))).onFalse(runOnce(() -> shooter.stop()));
-    m_driverCtrl.back().whileTrue(runOnce(() -> amp.setAmpVoltage(10))).onFalse(runOnce(() -> amp.stop()));
+    // m_driverCtrl.a().whileTrue(new IntakeNote(intake)).onFalse(runOnce(() -> intake.stop()));
+    // m_driverCtrl.rightTrigger().onTrue(runOnce(() -> feeder.setFeederVoltage(6))).onFalse(runOnce(() -> feeder.stop()));
+    // m_driverCtrl.rightBumper().whileTrue(new IndexToShooter(intake, feeder, amp)).onFalse(runOnce(() -> intake.stop()).alongWith(runOnce(() -> amp.stop())).alongWith(runOnce(() -> feeder.stop())));
+    // m_driverCtrl.leftBumper().whileTrue(new IndexToAmp(intake, amp, elevator)).onFalse(runOnce(() -> intake.stop()).alongWith(runOnce(() -> amp.stop())).alongWith(runOnce(() -> feeder.stop())));
+    // m_driverCtrl.x().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(varAngle))));
+    // m_driverCtrl.b().onTrue(runOnce(() -> pivot.setAngle(Rotation2d.fromDegrees(1))));
+    // m_driverCtrl.povRight().onTrue(runOnce(() -> elevator.setHeight(.135)));
+    // m_driverCtrl.povLeft().onTrue(runOnce(() -> elevator.setHeight(0)));
+    // m_driverCtrl.rightTrigger().onTrue(runOnce(() -> feeder.setFeederVoltage(10))).onFalse(runOnce(() -> feeder.stop()));
+    // m_driverCtrl.leftTrigger().whileTrue(runOnce(() -> shooter.setVelocity(2500))).onFalse(runOnce(() -> shooter.stop()));
+    // m_driverCtrl.povUp().whileTrue(runOnce(() -> shooter.setVelocity(-2500))).onFalse(runOnce(() -> shooter.stop()));
+    // m_driverCtrl.back().whileTrue(runOnce(() -> amp.setAmpVoltage(12))).onFalse(runOnce(() -> amp.stop()));
+    // Stationary look and shoot with shoot when ready
+     m_driverCtrl.rightBumper().whileTrue(Commands.parallel(
+                new Shoot(m_drivetrain, m_feederSubsystem, m_pivotSubsystem, m_shooterSubsystem, true)
+                        .andThen(m_pivotSubsystem.prepareForIntakeCommand()),
+                m_drivetrain.applyRequest(
+                        () -> m_head.withVelocityX(-m_driverCtrl.getLeftY() * m_MaxSpeed * .75 * invertForAlliance())
+                                .withVelocityY(-m_driverCtrl.getLeftX() * m_MaxSpeed * .75 * invertForAlliance())
+                                .withTargetDirection(m_drivetrain.getVelocityOffset())
+                                .withDeadband(Constants.kMaxSpeed * 0.1))));
+
+        m_driverCtrl.rightBumper().onFalse(m_shooterSubsystem.stopShooterCommand());
   }
     public Command getAutonomousCommand() {
         /* First put the drivetrain into auto run mode, then run the auto */

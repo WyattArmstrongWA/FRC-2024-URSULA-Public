@@ -59,6 +59,8 @@ public final class Constants {
 
     public static final double PivotStowAngle = 0;
     public static final double ElevatorStowHeight = 0;
+
+    public static final double PivotIntakeAngle = 40;
     
     public static final double intakeFeedVolts = 10; 
     public static final double injectFeedVolts = -8; 
@@ -72,10 +74,10 @@ public final class Constants {
     public static final double ampInjectTargetVoltage = -6;
     
     public static final double pivotMinClamp = 0;
-    public static final double pivotMaxClamp = 60;
+    public static final double pivotMaxClamp = 58;
     
     public static final double shooterMinClamp = 0;
-    public static final double shooterMaxClamp = 11000;
+    public static final double shooterMaxClamp = 10000;
   }
 
   public static final class AmpConstants {
@@ -109,8 +111,8 @@ public final class Constants {
     public static final int elevatorFollowerTalonID = 22;
     public static final String elevatorTalonCANBus = "rio";
 
-    public static final double elevatorGearRatio = (10/58)*(26/22); // Sensor to Mechanism Ratio
-    public static final double elevatorPinionRadius = Units.inchesToMeters(1); // Meters
+    public static final double elevatorGearRatio = 1/0.0681; // Sensor to Mechanism Ratio
+    public static final double elevatorPinionRadius = Units.inchesToMeters(.48295); // Meters
 
     public static final double maxElevatorHeight = 0.2; // Meters
 
@@ -121,7 +123,7 @@ public final class Constants {
         .withStatorCurrentLimitEnable(false)
         .withSupplyCurrentLimitEnable(false))
       .withMotorOutput(new MotorOutputConfigs()
-        .withNeutralMode(NeutralModeValue.Brake)
+        .withNeutralMode(NeutralModeValue.Coast)
         .withInverted(InvertedValue.Clockwise_Positive))
       .withSlot0(new Slot0Configs()
         .withKV(0)
@@ -179,7 +181,7 @@ public final class Constants {
         .withStatorCurrentLimitEnable(true)
         .withSupplyCurrentLimitEnable(true))
       .withMotorOutput(new MotorOutputConfigs()
-        .withNeutralMode(NeutralModeValue.Coast)
+        .withNeutralMode(NeutralModeValue.Brake)
         .withInverted(InvertedValue.CounterClockwise_Positive));
 
     public static final DutyCycleOut feederDutyCycle = new DutyCycleOut(0, false, false, false, false);
@@ -277,7 +279,7 @@ public final class Constants {
     public static final String shooterTalonCANBus = "rio";
 
     //public static final double shooterGearRatio = 0.5; // Sensor to Mechanism Ratio
-    public static final double shooterGearRatio = 1;
+    public static final double shooterGearRatio = 2;
 
     public static final double shooterVelocityTolerance = 200; // RPM
 

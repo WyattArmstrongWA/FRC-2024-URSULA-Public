@@ -41,7 +41,7 @@ public class IntakeNote extends Command {
     intake.stop();
   }
 
-  // Returns true when the command should end.
+ // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     if (intake.isNotePresentTOF()) {

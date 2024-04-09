@@ -14,7 +14,6 @@ public class ShooterInterpolation {
     Setpoints.shooterMinClamp, Setpoints.shooterMaxClamp));
 }
 
-
      public static Rotation2d calculatePivotAngle(double targetDistance) {
 
             return Rotation2d.fromDegrees(MathUtil.clamp(Constants.kPivotMap.getInterpolated(new InterpolatingDouble(targetDistance)).value,

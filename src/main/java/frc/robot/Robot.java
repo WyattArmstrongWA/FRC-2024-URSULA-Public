@@ -107,7 +107,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
-    m_robotContainer.shooter.singWonderwall();
+    m_robotContainer.m_shooterSubsystem.singWonderwall();
   }
 
   @Override
