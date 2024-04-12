@@ -13,7 +13,9 @@ import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -29,6 +31,8 @@ public class Robot extends TimedRobot {
   private Field2d m_autoTraj = new Field2d();
   private List<Pose2d> m_pathsToShow = new ArrayList<Pose2d>();
 
+  boolean enableLimelight = true;
+
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
@@ -39,10 +43,24 @@ public class Robot extends TimedRobot {
     FollowPathCommand.warmupCommand().schedule(); //Added to warmup pathplanner class load
 
     RobotController.setBrownoutVoltage(6.0);
+
+    for (int port = 5800; port <= 5807; port++) {
+      PortForwarder.add(port, "limelight.local", port);
+    }
   }
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
+
+    //Currently disabled with the enableLimelight variable.
+    if (enableLimelight) {
+      //Periodically retrieve the results from the limelight and extract the pose.
+      LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+      if (limelightMeasurement.tagCount >= 2) {
+        m_robotContainer.m_drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
+        m_robotContainer.m_drivetrain.addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
+      }
+    }
   }
 
   @Override

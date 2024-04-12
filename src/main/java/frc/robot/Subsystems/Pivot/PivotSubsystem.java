@@ -85,9 +85,13 @@ public class PivotSubsystem extends SubsystemBase {
   
   // To position for Intake, move Arm to INTAKE position
     public Command prepareForIntakeCommand() {
-        return new RunCommand(()-> this.setAngle(Setpoints.PivotIntakeAngle), this)
+        return new RunCommand(()-> this.setAngle(Rotation2d.fromDegrees(Setpoints.PivotIntakeAngle)), this)
             .until(()->this.isAtSetpoint());
     }   
+
+    public Command stowPivotCommand() {
+      return new RunCommand(()->this.stow(), this);
+  }
 
   @Override
   public void periodic() {

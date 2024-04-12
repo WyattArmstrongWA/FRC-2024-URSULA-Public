@@ -5,6 +5,9 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.playingwithfusion.TimeOfFlight;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.Setpoints;
@@ -59,6 +62,13 @@ public class FeederSubsystem extends SubsystemBase {
     return motor;
   }
 
+    public Command feedWithTimeout() {
+        return new RunCommand(() -> this.setFeederVoltage(Setpoints.intakeFeedVolts), this)
+                .withTimeout(0.5) // run for 1.5 seconds
+                .andThen(() -> this.stop());
+
+    }
+
   public void feedNoteToBeam() {
 
     if (!isNotePresentTOF()) {
@@ -67,4 +77,15 @@ public class FeederSubsystem extends SubsystemBase {
       stop();
     }
   }
+
+  public Command feedWithBeam() {
+    return new RunCommand(() -> this.setFeederVoltage(Setpoints.intakeFeedVolts), this)
+            .until(() -> !isNotePresentTOF()) // run until there is NOT a Note in the Stage
+            .andThen(() -> this.stop());
+}
+
+      // Pass the Note to the Shooter
+      public ConditionalCommand feedNote2ShooterCommand() {
+        return new ConditionalCommand(feedWithBeam(),feedWithTimeout(),() -> isNotePresentTOF()); 
+    }
 }

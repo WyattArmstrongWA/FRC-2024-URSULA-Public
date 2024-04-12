@@ -125,14 +125,14 @@ public class LEDSubsystem extends SubsystemBase {
         m_candle.getAllConfigs(candleConfiguration);
         candleConfiguration.statusLedOffWhenActive = true;
         candleConfiguration.disableWhenLOS = false;
-        candleConfiguration.stripType = LEDStripType.RGB;
+        candleConfiguration.stripType = LEDStripType.GRB;
         candleConfiguration.brightnessScalar = 0.9;
         candleConfiguration.vBatOutputMode = VBatOutputMode.Modulated;
         m_candle.configAllSettings(candleConfiguration, 100);
 
         m_candle.getAllConfigs(candleConfiguration);
 
-        m_candle.configLEDType(LEDStripType.RGB, 300);
+        m_candle.configLEDType(LEDStripType.GRB, 300);
 
         m_candle.getAllConfigs(candleConfiguration);
     }
@@ -145,7 +145,7 @@ public class LEDSubsystem extends SubsystemBase {
         LEDState newState = LEDState.DISABLED;
 
         if (DriverStation.isDisabled()) {
-            if (RobotController.getBatteryVoltage() < 12.3) {
+            if (RobotController.getBatteryVoltage() < 11.8) {
                 newState = LEDState.DISABLED_LOW_BATTERY;
             } else if (a==x) {
                 newState = LEDState.DISABLED_TARGET;

@@ -5,9 +5,12 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.Setpoints;
 import frc.robot.Util.ErrorCheckUtil;
 import frc.robot.Util.TalonFXFactory;
 import frc.robot.Util.ErrorCheckUtil.CommonErrorNames;
@@ -94,6 +97,24 @@ public class ElevatorSubsystem extends SubsystemBase {
   public boolean isAtSetpoint() {
     return Math.abs(getSetpointError()) < ElevatorConstants.heightErrorTolerance;
   }
+
+   // To position for Intake, move Arm to INTAKE position
+    public Command ampExtendCommand() {
+        return new RunCommand(()-> this.setHeight(0.135), this)
+            .until(()->this.isAtSetpoint());
+    }  
+
+    // To position for Intake, move Arm to INTAKE position
+    public Command climbExtendCommand() {
+      return new RunCommand(()-> this.setHeight(0.19), this)
+          .until(()->this.isAtSetpoint());
+  }  
+
+  // To position for Intake, move Arm to INTAKE position
+  public Command stowCommand() {
+    return new RunCommand(()-> this.setHeight(0), this)
+        .until(()->this.isAtSetpoint());
+}  
 
   @Override
   public void periodic() {

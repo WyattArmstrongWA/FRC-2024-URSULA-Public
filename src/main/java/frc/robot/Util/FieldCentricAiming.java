@@ -4,7 +4,6 @@
 
 package frc.robot.Util;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -12,8 +11,8 @@ import frc.robot.Constants;
 
 
 public class FieldCentricAiming {
-    private Pose2d defaultPosition = new Pose2d(new Translation2d(0,0), new Rotation2d(0));
-    private Pose2d speakerPosition = defaultPosition;
+    private Translation2d defaultPosition = new Translation2d(0,0);
+    private Translation2d speakerPosition = defaultPosition;
     
     public FieldCentricAiming() {
         try {
@@ -24,7 +23,7 @@ public class FieldCentricAiming {
         
     }
 
-    public Pose2d getSpeakerPos() {
+    public Translation2d getSpeakerPos() {
         if (speakerPosition == defaultPosition) {
             if (DriverStation.getAlliance() != null && !DriverStation.getAlliance().isEmpty()) {
                 speakerPosition = (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ? Constants.FieldConstants.BLUE_SPEAKER : Constants.FieldConstants.RED_SPEAKER;
@@ -34,11 +33,11 @@ public class FieldCentricAiming {
     }
 
     public double getDistToSpeaker(Translation2d robotPose) {
-        return getSpeakerPos().getTranslation().getDistance(robotPose);
+        return getSpeakerPos().getDistance(robotPose);
     }
 
     public Rotation2d getAngleToSpeaker(Translation2d pose) {
-        return getSpeakerPos().getTranslation().minus(pose).getAngle();
+        return getSpeakerPos().minus(pose).getAngle();
     }
 
 }

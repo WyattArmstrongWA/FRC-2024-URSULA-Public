@@ -93,6 +93,7 @@ public class Shoot extends Command {
     public void execute() {
         currentRobotTranslation = m_drivetrain.getState().Pose.getTranslation();
         currentAngleToSpeaker = m_FieldCentricAiming.getAngleToSpeaker(currentRobotTranslation);
+        SmartDashboard.putNumber("x",currentAngleToSpeaker.getDegrees());
         // Get current drivetrain velocities in field relative terms
         speeds = m_drivetrain.getFieldRelativeChassisSpeeds();
 
@@ -175,6 +176,7 @@ public class Shoot extends Command {
         shotTimer.stop();
         shotTimer.reset();
         m_shooter.stop();
+        m_feeder.stop();
     }
 
     // Returns true when the command should end.

@@ -34,6 +34,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -52,7 +53,7 @@ import frc.robot.generated.TunerConstants;
  */
 public final class Constants {
 
-  public static final boolean kIsTuningMode = false;
+  public static final boolean kIsTuningMode = true;
   public static final double kConfigTimeoutSeconds = 0.1;
 
   public static class Setpoints {
@@ -60,7 +61,7 @@ public final class Constants {
     public static final double PivotStowAngle = 0;
     public static final double ElevatorStowHeight = 0;
 
-    public static final double PivotIntakeAngle = 40;
+    public static final double PivotIntakeAngle = 10;
     
     public static final double intakeFeedVolts = 10; 
     public static final double injectFeedVolts = -8; 
@@ -221,7 +222,7 @@ public final class Constants {
     public static final int pivotEncoderID = 60;
     public static final String pivotEncoderCANBus = "rio";
 
-    public static final double pivotGearRatio = 60.9; // Sensor to Mechanism Ratio
+    public static final double pivotGearRatio = 111.65; // Sensor to Mechanism Ratio
 
     public static final Rotation2d pivotMinAngle = Rotation2d.fromDegrees(0);
     public static final Rotation2d pivotMaxAngle = Rotation2d.fromDegrees(58);
@@ -269,7 +270,7 @@ public final class Constants {
     public static final double kPivotPositionUpdateFrequency = 50; // Hertz
     public static final double kPivotErrorUpdateFrequency = 50; // Hertz
 
-    public static final Rotation2d angleErrorTolerance = Rotation2d.fromDegrees(1); // Degrees
+    public static final Rotation2d angleErrorTolerance = Rotation2d.fromDegrees(2.5); // Degrees
   }
 
   public static final class ShooterConstants {
@@ -294,14 +295,14 @@ public final class Constants {
         .withInverted(InvertedValue.Clockwise_Positive))
       .withSlot0(new Slot0Configs()
         //.withKS(1) 4499: s=1, v=.2, p=12, 
-        .withKV(.5) // 0.075
-        .withKP(.37) // 0.125
+        .withKV(.2) // 0.075
+        .withKP(.205) // 0.125
         .withKI(0)
         .withKD(0))
       .withFeedback(new FeedbackConfigs()
         .withSensorToMechanismRatio(shooterGearRatio));
 
-    public static final VelocityVoltage shooterControl = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
+    public static final VelocityVoltage shooterControl = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
     public static final Follower followerControl = new Follower(shooterTalonLeaderID, true);
     public static final double kShooterVelocityUpdateFrequency = 10; // Hertz
   }
@@ -391,8 +392,8 @@ static {
     }
 
     public static class FieldConstants {
-        public static final Pose2d BLUE_SPEAKER = new Pose2d(Units.inchesToMeters(-1.5+12), Units.inchesToMeters(218.42), new Rotation2d(0));
-        public static final Pose2d RED_SPEAKER = new Pose2d(Units.inchesToMeters(652.73-12), Units.inchesToMeters(218.42), new Rotation2d(Math.PI));
+        public static final Translation2d BLUE_SPEAKER = new Translation2d(0, 0);
+        public static final Translation2d RED_SPEAKER = new Translation2d(1, 1);
         public static final double BLUE_AUTO_PENALTY_LINE = 8.6; // X distance from origin to center of the robot almost fully crossing the midline
         public static final double RED_AUTO_PENALTY_LINE = 8; // X distance from origin to center of the robot almost fully crossing the midline
 
@@ -401,8 +402,8 @@ static {
     }
 
     // Initial max is true top speed
-    public static final double kMaxSpeed = TunerConstants.kSpeedAt12VoltsMps;
-    public static final double kMaxAngularRate = Math.PI * 2;
+    public static final double kMaxSpeed = TunerConstants.kSpeedAt12VoltsMps*1.5;
+    public static final double kMaxAngularRate = Math.PI * 2*1.5;
 
     public static final double robotAtAngleTolerance = 2;
 
