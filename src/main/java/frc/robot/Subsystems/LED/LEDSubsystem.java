@@ -323,8 +323,8 @@ public class LEDSubsystem extends SubsystemBase {
     }
     
     LEDSegment m_Matrix = new LEDSegment(0, 1, 0);
-    LEDSegment m_VerticalLeft = new LEDSegment(2, 47, 1);
-    LEDSegment m_VerticalRight = new LEDSegment(50, 80, 2);
+    LEDSegment m_VerticalLeft = new LEDSegment(1, 47, 1);
+    LEDSegment m_VerticalRight = new LEDSegment(47, 80, 2);
    
     Animation a_WhiteLeftStrobe = new StrobeAnimation(white.r, white.g, white.b, 0, 0.5, m_VerticalLeft.segmentSize, m_VerticalLeft.startIndex); // Flash
     Animation a_WhiteRightStrobe = new StrobeAnimation(white.r, white.g, white.b, 0, 0.5, m_VerticalRight.segmentSize, m_VerticalRight.startIndex);

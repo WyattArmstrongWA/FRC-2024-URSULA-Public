@@ -51,7 +51,11 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public boolean isAtSetpoint() {
+    if(shooterTalonLeader.getClosedLoopReference().getValueAsDouble() > 0) {
     return Math.abs(shooterTalonLeader.getClosedLoopError().getValue()) * 60 < ShooterConstants.shooterVelocityTolerance;
+    } else {
+      return false;
+    }
   }
 
   private TalonFX configureShooterTalon(TalonFX motor) {
@@ -78,6 +82,7 @@ public class ShooterSubsystem extends SubsystemBase{
   @Override
   public void periodic() {
     SmartDashboard.putNumber("shooter rpm", getVelocity()*60);
+    SmartDashboard.putBoolean("shooter at sp?", isAtSetpoint());
   }
 
       public Command runShooterCommand(double velocity) {

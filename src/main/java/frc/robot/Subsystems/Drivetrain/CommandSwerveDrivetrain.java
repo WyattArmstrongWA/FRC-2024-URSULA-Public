@@ -15,6 +15,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -111,7 +112,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 },
                 this); // Subsystem for requirements
 
-                //PathPlannerLogging.setLogActivePathCallback((poses) -> _field.getObject("path").setPoses(poses)); //Uncomment to see currently followed path
+                PathPlannerLogging.setLogActivePathCallback((poses) -> _field.getObject("path").setPoses(poses)); //Uncomment to see currently followed path
                 
 
     }
@@ -159,6 +160,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
         _field.setRobotPose(getState().Pose);
         SmartDashboard.putData("Robot Pose Field Map",_field);
+            SmartDashboard.putNumber("rotatio", getRotation().getDegrees());            
             SmartDashboard.putNumber("Distance to Speaker", m_FieldCentricAiming.getDistToSpeaker(getState().Pose.getTranslation()));            
             SmartDashboard.putBoolean("Is within 3 deg of speaker", atAngle);
             SmartDashboard.putNumber("vel Offset drivertrain", getVelocityOffset().getDegrees());

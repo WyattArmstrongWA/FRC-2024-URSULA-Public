@@ -116,7 +116,11 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    SmartDashboard.putBoolean("amp mode?", m_robotContainer.isAmpMode());
+    SmartDashboard.putBoolean("rpm isat?", m_robotContainer.rpmSetpoint());
+    SmartDashboard.putBoolean("angle isat?", m_robotContainer.angleSetpoint());
+  }
 
   @Override
   public void teleopExit() {

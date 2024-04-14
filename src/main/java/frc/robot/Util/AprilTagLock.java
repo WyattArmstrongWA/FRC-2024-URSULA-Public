@@ -7,8 +7,8 @@ public class AprilTagLock {
 
    public static PIDController rotationPID = createPIDController();
     private static PIDController createPIDController() {
-        PIDController pid = new PIDController(0.01, 0, 0);
-        pid.setTolerance(0.005);
+        PIDController pid = new PIDController(0.0105, 1e-6, 0.000001);
+        pid.setTolerance(0);
         pid.enableContinuousInput(0, 360);
         pid.setSetpoint(0);
         return pid;

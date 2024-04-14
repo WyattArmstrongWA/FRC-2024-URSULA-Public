@@ -14,13 +14,15 @@ public class IndexToShooter extends Command {
   private IntakeSubsystem intake;
   private FeederSubsystem feeder;
   private AmpSubsystem amp;
+  private Boolean reindex;
 
   /** Creates a new IntakeNote. */
-  public IndexToShooter(IntakeSubsystem intake, FeederSubsystem feeder, AmpSubsystem amp){
+  public IndexToShooter(IntakeSubsystem intake, FeederSubsystem feeder, AmpSubsystem amp, boolean reindex){
 
     this.intake = intake;
     this.feeder = feeder;
     this.amp = amp;
+    this.reindex = reindex;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake, feeder, amp);
   }
@@ -34,7 +36,12 @@ public class IndexToShooter extends Command {
   @Override
   public void execute() {
          if(!feeder.isNotePresentTOF()) {
+
+          if(reindex==true) { 
+            intake.setIntakeVoltage(-Setpoints.intakingTargetVoltage);
+          } else {
           intake.setIntakeVoltage(Setpoints.intakingTargetVoltage);
+          }
           feeder.setFeederVoltage(Setpoints.intakeFeedVolts);
           amp.setAmpVoltage(Setpoints.ampInjectTargetVoltage);
         } else {

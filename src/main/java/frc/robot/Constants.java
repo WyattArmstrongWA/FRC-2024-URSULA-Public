@@ -301,7 +301,7 @@ public final class Constants {
     //public static final double shooterGearRatio = 0.5; // Sensor to Mechanism Ratio
     public static final double shooterGearRatio = 0.5;
 
-    public static final double shooterVelocityTolerance = 200; // RPM
+    public static final double shooterVelocityTolerance = 250; // RPM
 
     public static final TalonFXConfiguration kShooterConfiguration = new TalonFXConfiguration()
       .withCurrentLimits(new CurrentLimitsConfigs()
@@ -327,21 +327,39 @@ public final class Constants {
   }
 
   public static double[][] kRPMValues = {
-    {6.7, 1084},
-    {5.5, 990},
-    {4.5, 900},
-    {3.5, 813},
-    {2.5, 770},
-    {2, 730},
-    {1.5, 740},
+    {9.80, 8600},
+  {8.90, 8600},
+  {7.62,8600},
+  {6.85, 8600},
+  {6.62, 8600},
+  {6.33, 8600},
+  {6.02, 8500},
+    {5.51, 8500},
+    {4.8, 8000},
+    {4.33, 7000},
+    {3.71, 7000},
+    {3.09, 7000},
+    {2.63, 7000},
+    {1.90, 7000},
+    {1.40, 7000}
 };
 
 public static double[][] kPivotValues = {
-    {3.48+0.5, 24},
-    {3+0.5, 26},
-    {2.461+0.5, 31},
-    {1.735+0.5, 40},
-    {1.14+0.5, 52}
+  {9.80, 17.25},
+  {8.90, 17.75},
+  {7.62, 18.65},
+  {6.85, 19},
+  {6.62, 19.5},
+  {6.33, 19.75},
+  {6.02, 20},
+  {5.51, 21},
+    {4.8, 22.75},
+    {4.33, 24.5},
+    {3.71, 27},
+    {3.09, 30},
+    {2.63, 34},
+    {1.90, 43},
+    {1.40, 52}
 };
 
 public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kPivotMap = new InterpolatingTreeMap<>();

@@ -1,10 +1,5 @@
 package frc.robot.Commands;
 
-import java.util.function.Supplier;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Setpoints;
 import frc.robot.Subsystems.Feeder.FeederSubsystem;
@@ -18,16 +13,18 @@ public class Shoot extends Command {
     private PivotSubsystem pivot;
     private Limelight limelight;
     private FeederSubsystem feeder;
+    private Boolean auto;
     
 
 
   /** Creates a new Shoot. */
-  public Shoot(ShooterSubsystem shooter, PivotSubsystem pivot, Limelight limelight, FeederSubsystem feeder) {
+  public Shoot(ShooterSubsystem shooter, PivotSubsystem pivot, Limelight limelight, FeederSubsystem feeder, Boolean auto) {
 
     this.shooter = shooter;
     this.pivot = pivot;
     this.limelight = limelight;
     this.feeder = feeder;
+    this.auto = auto;
 
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -58,9 +55,8 @@ public class Shoot extends Command {
 
     // double[] speeds = targetDistance < ScoringConstants.flywheelDistanceCutoff ? ScoringConstants.shooterSetpointClose
     //     : ScoringConstants.shooterSetpointFar;
-    shooter.setVelocity(7000);
+    shooter.setVelocity(ShooterInterpolation.calculateShooterRPM(targetDistance));
 
- 
     if ((shooter.isAtSetpoint() && pivot.isAtSetpoint())) {
       feeder.setFeederVoltage(Setpoints.scoringFeedVolts);
     } else {
@@ -84,6 +80,9 @@ public class Shoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(auto==true) {
+      return !feeder.isNotePresentTOF();
+  }
     return false;
   }
 }

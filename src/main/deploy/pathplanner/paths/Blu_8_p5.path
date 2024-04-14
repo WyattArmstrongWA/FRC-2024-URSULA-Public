@@ -1,0 +1,107 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.958551735285289,
+        "y": 6.362204724409449
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 12.277565210535203,
+        "y": 6.529359675281368
+      },
+      "isLocked": false,
+      "linkedName": "blu8_firenote1"
+    },
+    {
+      "anchor": {
+        "x": 4.5752279406954885,
+        "y": 1.6092289872102996
+      },
+      "prevControl": {
+        "x": 6.280112576458644,
+        "y": -0.6230890023040967
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Blu8_p5end"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": -103.83292711862278,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.05,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "SetWrist",
+      "waypointRelativePos": 0.55,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetWristB_8_4"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Fire",
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "FireNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -42.734852327877825,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Blu_8_Line_5",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

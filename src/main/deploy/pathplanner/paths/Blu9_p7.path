@@ -1,0 +1,87 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.417162560331765,
+        "y": 1.7396678661794585
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7250111760289963,
+        "y": 2.756501172573344
+      },
+      "isLocked": false,
+      "linkedName": "Blu9_p6end"
+    },
+    {
+      "anchor": {
+        "x": 1.199067125406978,
+        "y": 4.645715473249129
+      },
+      "prevControl": {
+        "x": 1.553559470755305,
+        "y": 3.3023760592975733
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.05,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartShooter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "FireNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -44.09061955080086,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Blu_9_Line_4",
+  "previewStartingState": {
+    "rotation": -90.81145416288052,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

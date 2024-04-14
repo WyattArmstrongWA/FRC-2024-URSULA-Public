@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 4.061722123444247,
-      "y": 5.038789506150441
+      "x": 15.0990964641282,
+      "y": 1.6045442999976915
     },
-    "rotation": 0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SimplePath"
+            "pathName": "Red_5_p1"
           }
         }
       ]
