@@ -30,7 +30,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -71,7 +70,7 @@ public final class Constants {
     public static final double intakingTargetVoltage = 8;
     public static final double outtakingTargetVoltage = -8;
 
-    public static final double ampEjectTargetVoltage = 6;
+    public static final double ampEjectTargetVoltage = 11;
     public static final double ampInjectTargetVoltage = -6;
     
     public static final double pivotMinClamp = 0;
@@ -80,6 +79,26 @@ public final class Constants {
     public static final double shooterMinClamp = 0;
     public static final double shooterMaxClamp = 10000;
   }
+
+  public static final double AprilTagHeights[] = {
+    53.38,
+    53.38,
+    57.13,
+    57.13,
+    53.38,
+    53.38,
+    57.13,
+    57.13,
+    53.38,
+    53.38,
+    52,
+    52,
+    52,
+    52,
+    52,
+    52
+};
+
 
   public static final class AmpConstants {
     
@@ -280,7 +299,7 @@ public final class Constants {
     public static final String shooterTalonCANBus = "rio";
 
     //public static final double shooterGearRatio = 0.5; // Sensor to Mechanism Ratio
-    public static final double shooterGearRatio = 2;
+    public static final double shooterGearRatio = 0.5;
 
     public static final double shooterVelocityTolerance = 200; // RPM
 
@@ -295,7 +314,7 @@ public final class Constants {
         .withInverted(InvertedValue.Clockwise_Positive))
       .withSlot0(new Slot0Configs()
         //.withKS(1) 4499: s=1, v=.2, p=12, 
-        .withKV(.2) // 0.075
+        .withKV(.075) // 0.075
         .withKP(.205) // 0.125
         .withKI(0)
         .withKD(0))
@@ -318,13 +337,11 @@ public final class Constants {
 };
 
 public static double[][] kPivotValues = {
-    {6.7, 25},
-    {5.5, 21.66},
-    {4.5, 19.2},
-    {3.5, 12},
-    {2.5, 7},
-    {2, 4.5},
-    {1.5, 0}
+    {3.48+0.5, 24},
+    {3+0.5, 26},
+    {2.461+0.5, 31},
+    {1.735+0.5, 40},
+    {1.14+0.5, 52}
 };
 
 public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kPivotMap = new InterpolatingTreeMap<>();

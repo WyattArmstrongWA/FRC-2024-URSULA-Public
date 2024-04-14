@@ -36,6 +36,7 @@ import frc.robot.Subsystems.Intake.IntakeSubsystem;
 import frc.robot.Subsystems.LED.LEDSubsystem;
 import frc.robot.Subsystems.Pivot.PivotSubsystem;
 import frc.robot.Subsystems.Shooter.ShooterSubsystem;
+import frc.robot.Util.AprilTagLock;
 import frc.robot.Util.CommandXboxPS5Controller;
 import frc.robot.Util.TunableNumber;
 import frc.robot.Vision.Limelight;
@@ -220,16 +221,16 @@ private void configureSmartDashboard() {
     //         .withTimeout(2)
     //         .andThen(m_pivotSubsystem.prepareForIntakeCommand()));
 
-            m_driverCtrl.rightBumper().whileTrue(Commands.parallel(
-                new Shoot(m_drivetrain, m_feederSubsystem, m_pivotSubsystem, m_shooterSubsystem, true)
-                        .andThen(m_pivotSubsystem.prepareForIntakeCommand()),
-                m_drivetrain.applyRequest(
-                        () -> m_head.withVelocityX(-m_driverCtrl.getLeftY() * m_MaxSpeed * .75 * invertForAlliance())
-                                .withVelocityY(-m_driverCtrl.getLeftX() * m_MaxSpeed * .75 * invertForAlliance())
-                                .withTargetDirection(m_drivetrain.getVelocityOffset())
-                                .withDeadband(Constants.kMaxSpeed * 0.1))));
+            // m_driverCtrl.rightBumper().whileTrue(Commands.parallel(
+            //     new Shoot(m_drivetrain, m_feederSubsystem, m_pivotSubsystem, m_shooterSubsystem, true)
+            //             .andThen(m_pivotSubsystem.prepareForIntakeCommand()),
+            //     m_drivetrain.applyRequest(
+            //             () -> m_head.withVelocityX(-m_driverCtrl.getLeftY() * m_MaxSpeed * .75 * invertForAlliance())
+            //                     .withVelocityY(-m_driverCtrl.getLeftX() * m_MaxSpeed * .75 * invertForAlliance())
+            //                     .withTargetDirection(m_drivetrain.getVelocityOffset())
+            //                     .withDeadband(Constants.kMaxSpeed * 0.1))));
 
-                                m_driverCtrl.rightBumper().onFalse(m_shooterSubsystem.stopShooterCommand());
+            //                     m_driverCtrl.rightBumper().onFalse(m_shooterSubsystem.stopShooterCommand());
 
     // // Operator: When A button is pressed, run Shooter
     // m_operatorCtrl.x().whileTrue(m_shooterSubsystem.runShooterCommand(5000)
@@ -246,11 +247,17 @@ private void configureSmartDashboard() {
 
     // // Operator: down D-Pad Button: Elevator to Stowed Position (when pressed)
     // m_operatorCtrl.povDown().onTrue(m_elevatorSubsystem.stowCommand());
+
+    // Driver: While Left Bumper is held, reduce speed by 50%
+    m_driverCtrl.leftBumper().onTrue(runOnce(() -> m_MaxSpeed = Constants.kMaxSpeed * .25)
+    .andThen(() -> m_MaxAngularRate = Constants.kMaxAngularRate * .25));
+m_driverCtrl.leftBumper().onFalse(runOnce(() -> m_MaxSpeed = Constants.kMaxSpeed)
+    .andThen(() -> m_MaxAngularRate = Constants.kMaxAngularRate));
     
     
     m_driverCtrl.a().whileTrue(new IntakeNote(m_intakeSubsystem));
-    m_driverCtrl.y().whileTrue(runOnce(() -> m_shooterSubsystem.setVelocity(rpm.get()))).onFalse(runOnce(() -> m_shooterSubsystem.stop()));
-     //m_driverCtrl.rightBumper().onTrue(runOnce(() -> m_feederSubsystem.setFeederVoltage(10))).onFalse(runOnce(() -> m_feederSubsystem.stop()));
+    m_driverCtrl.y().whileTrue(new Shoot(m_shooterSubsystem, m_pivotSubsystem, vision, m_feederSubsystem)).onFalse(runOnce(() -> m_shooterSubsystem.stop()));
+     m_driverCtrl.povDown().onTrue(runOnce(() -> m_feederSubsystem.setFeederVoltage(10))).onFalse(runOnce(() -> m_feederSubsystem.stop()));
 
     m_operatorCtrl.y().whileTrue(new IndexToShooter(m_intakeSubsystem, m_feederSubsystem, m_ampSubsystem)).onFalse(runOnce(() -> m_intakeSubsystem.stop()).alongWith(runOnce(() -> m_ampSubsystem.stop())).alongWith(runOnce(() -> m_feederSubsystem.stop())));
      m_operatorCtrl.a().whileTrue(new IndexToAmp(m_intakeSubsystem, m_ampSubsystem, m_elevatorSubsystem)).onFalse(runOnce(() -> m_intakeSubsystem.stop()).alongWith(runOnce(() -> m_ampSubsystem.stop())).alongWith(runOnce(() -> m_feederSubsystem.stop())));
@@ -259,7 +266,7 @@ private void configureSmartDashboard() {
      m_operatorCtrl.povUp().onTrue(runOnce(() -> m_elevatorSubsystem.setHeight(.135)));
     m_operatorCtrl.povDown().onTrue(runOnce(() -> m_elevatorSubsystem.setHeight(0)));
      //m_driverCtrl.povUp().whileTrue(runOnce(() -> m_shooterSubsystem.setVelocity(-2500))).onFalse(runOnce(() -> m_shooterSubsystem.stop()));
-    m_driverCtrl.leftBumper().whileTrue(runOnce(() -> m_ampSubsystem.setAmpVoltage(12))).onFalse(runOnce(() -> m_ampSubsystem.stop()));
+    m_driverCtrl.povUp().whileTrue(runOnce(() -> m_ampSubsystem.setAmpVoltage(12))).onFalse(runOnce(() -> m_ampSubsystem.stop()));
     m_operatorCtrl.leftBumper().whileTrue(runOnce(() -> m_ampSubsystem.setAmpVoltage(10)).alongWith(runOnce(() -> m_feederSubsystem.setFeederVoltage(-10))).alongWith(runOnce(() -> m_intakeSubsystem.setIntakeVoltage(-10)))).onFalse(runOnce(() -> m_ampSubsystem.stop()).alongWith(runOnce(() -> m_feederSubsystem.stop())).alongWith(runOnce(() -> m_intakeSubsystem.stop())));
     // Stationary look and shoot with shoot when ready
   }
@@ -271,7 +278,7 @@ private void configureSmartDashboard() {
     private void newControlStyle() {
         m_controlStyle = () -> m_drive.withVelocityX(-m_driverCtrl.getLeftY() * m_MaxSpeed * invertForAlliance()) // Drive forward -Y
                 .withVelocityY(-m_driverCtrl.getLeftX() * m_MaxSpeed * invertForAlliance()) // Drive left with negative X (left)
-                .withRotationalRate(m_driverCtrl.getRightX() * m_MaxAngularRate); // Drive counterclockwise with negative X (left)
+                .withRotationalRate(m_driverCtrl.rightBumper().getAsBoolean()? -AprilTagLock.getR()*m_MaxAngularRate : m_driverCtrl.getRightX() * m_MaxAngularRate); // Drive counterclockwise with negative X (left)
         // Specify the desired Control Style as the Drivetrain's default command
         // Drivetrain will execute this command periodically
         m_drivetrain.setDefaultCommand(m_drivetrain.applyRequest(m_controlStyle).ignoringDisable(true));

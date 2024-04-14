@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.Setpoints;
 import frc.robot.Util.ErrorCheckUtil;
 import frc.robot.Util.TalonFXFactory;
 import frc.robot.Util.ErrorCheckUtil.CommonErrorNames;
